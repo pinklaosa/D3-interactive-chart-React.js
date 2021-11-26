@@ -22,9 +22,7 @@ function App() {
     //   });
     //   setData(loaddata);
     // });
-    return () => undefined;
-  }, [d]);
-  
+  }, []);
   return (
     <div className="App">
       <Linechart data={data} width={1000} height={500}/>
