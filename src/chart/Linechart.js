@@ -3,6 +3,7 @@ import * as d3 from "d3";
 
 function Linechart(props) {
   const { data, width, height } = props;
+  console.log(data);
   useEffect(() => {
     if (data.length > 0) {
       drawChart();
@@ -17,8 +18,6 @@ function Linechart(props) {
       .append("svg")
       .attr("width", width + margin.right + margin.left)
       .attr("height", height + margin.top + margin.bottom);
-    // .append("g")
-    // .attr("transform", `translate(${margin.left},${margin.top})`);
 
     //setting the scaling
     const x = d3
@@ -60,7 +59,7 @@ function Linechart(props) {
       .attr("class", "line")
       .append("path")
       .attr("fill", "none")
-      .attr("stroke", "#f6c3d0")
+      .attr("stroke", "black")
       .attr("d", (d) => line(d));
   };
   return <div id="container"></div>;
