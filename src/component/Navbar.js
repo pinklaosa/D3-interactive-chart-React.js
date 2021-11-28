@@ -6,7 +6,8 @@ const Navbar = () =>{
         <div>
             <Link to="/">Home</Link>|
             <Link to="/simpleline">Simple LineChart</Link>|
-            <Link to="/multiline">Multi LineChart</Link>
+            <Link to="/multiline">Multi LineChart</Link>|
+            <Link to="/d3fc">d3fc-line</Link>
         </div>
     )
 }

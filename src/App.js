@@ -4,6 +4,7 @@ import * as d3 from "d3";
 import Linechart from "./chart/Linechart";
 import MultiLinechart from "./chart/MultiLinechart";
 import Navbar from "./component/Navbar";
+import FCLine from "./chart/FCLine";
 
 function App() {
   const [data, setData] = useState([]);
@@ -31,6 +32,9 @@ function App() {
         <Switch>
           <Route exact path="/">
             <h1>Home</h1>
+          </Route>
+          <Route path="/d3fc">
+            <FCLine/>
           </Route>
           <Route path="/simpleline">
             <Linechart

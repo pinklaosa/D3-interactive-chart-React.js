@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import * as d3 from "d3";
+import * as fc from "d3fc";
 
 function Linechart(props) {
   const { data, width, height } = props;
@@ -38,13 +39,13 @@ function Linechart(props) {
       .curve(d3.curveCardinal);
 
     //setting up the axes
-    const xAxis = svg
+    svg
       .append("g")
       .attr("class", "axis--x")
       .attr("transform", `translate(0,${height - margin.bottom})`)
       .call(d3.axisBottom(x));
 
-    const yAxis = svg
+    svg
       .append("g")
       .attr("class", "axis--y")
       .attr("transform", `translate(${margin.left},0)`)

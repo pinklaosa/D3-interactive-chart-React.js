@@ -79,8 +79,6 @@ const MultiLinechart = (props) => {
         lines.attr("stroke", (data) => color(data));
       } else {
         const [x0, x1] = selection.map(x.invert);
-        //console.log("x0 : " + x0 + "| x1 : " + x1);
-        //console.log(x0.constructor.name);
         const brushData = data.map(({ col, values }) => {
           return {
             col,
