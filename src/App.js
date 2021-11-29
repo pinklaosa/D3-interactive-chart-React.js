@@ -47,7 +47,7 @@ function App() {
             <MultiLinechart
               data={data}
               height={550}
-              width={1000}
+              width={1500}
               margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
             ></MultiLinechart>
           </Route>

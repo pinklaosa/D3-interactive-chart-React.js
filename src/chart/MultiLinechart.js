@@ -24,7 +24,7 @@ const MultiLinechart = (props) => {
     const x = d3
       .scaleTime()
       .domain(d3.extent(data[0].values, (d) => d.date))
-      .range([margin.left, width-100]);
+      .range([margin.left, width - 500]);
 
     const y = d3
       .scaleLinear()
@@ -67,18 +67,20 @@ const MultiLinechart = (props) => {
 
     //brush tool
     const brush = d3
-    .brushX()
-    .extent([
-      [margin.left, margin.top],
-      [width -100, height - margin.bottom],
-    ])
-    .on("start brush end", brushed);
+      .brushX()
+      .extent([
+        [margin.left, margin.top],
+        [width - 500, height - margin.bottom],
+      ])
+      .on("start brush end", brushed);
 
     function brushed({ selection }) {
       if (selection == null) {
         lines.attr("stroke", (data) => color(data));
+        d3.selectAll(".details").remove();
       } else {
         const [x0, x1] = selection.map(x.invert);
+
         const brushData = data.map(({ col, values }) => {
           return {
             col,
@@ -92,8 +94,35 @@ const MultiLinechart = (props) => {
       }
     }
 
-    //call tool
+    //legend
+    const legend = svg.append("g").attr("class", "legend");
+    legend
+      .selectAll(".line")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("cx", width - 450)
+      .attr("cy", (d, i) => margin.top + 10 + i * 25)
+      .attr("r", 7)
+      .style("fill", (d) => color(d));
+
+    legend
+      .selectAll(".lines")
+      .data(data)
+      .enter()
+      .append("text")
+      .attr("x", width-430)
+      .attr("y", (d, i) => margin.top + 10 + i * 25)
+      .style("fill", (d) => color(d))
+      .text((data) => data.col)
+      .attr("text-anchor", "left")
+      .style("alignment-baseline", "middle");
+
+    //call d3 tools
     svg.append("g").attr("class", "brush").call(brush);
+
+    //other tools
+    const details = d3.select("#multi").append("div").attr("class", "details");
   };
 
   return <div id="multi"></div>;
