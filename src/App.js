@@ -9,10 +9,12 @@ import SimpleDataGrid from './component/SimpleDataGrid';
 
 function App() {
   const [data, setData] = useState([]);
+  const [rawdata,setRawdata] = useState([]);
   const parseDate = d3.timeParse("%Y-%m");
   // const parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S");
   useEffect(() => {
     d3.csv("data/data-extant.csv").then((d) => {
+      setRawdata(d);
       const loaddata = d.columns.slice(1).map((sensor) => {
         return {
           col: sensor,
@@ -27,7 +29,6 @@ function App() {
       setData(loaddata);
     });
   }, []);
-   
   return (
     <div className="App">
       <Router>
@@ -57,6 +58,7 @@ function App() {
           <Route path="/simpledatagrid">
             <SimpleDataGrid
               data={data}
+              rawdata={rawdata}
             ></SimpleDataGrid>
           </Route>
         </Switch>

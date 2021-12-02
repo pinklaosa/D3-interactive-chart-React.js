@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import * as d3 from "d3";
 
 const MultiLinechart = (props) => {
   const { data, height, width, margin } = props;
+
   useEffect(() => {
     if (data.length > 0) {
       drawChart();
@@ -82,7 +83,7 @@ const MultiLinechart = (props) => {
         d3.selectAll(".details").remove();
       } else {
         const [x0, x1] = selection.map(x.invert);
-
+        console.log("x0 : " + x0 + "| x1 : " + x1);
         const brushData = data.map(({ col, values }) => {
           return {
             col,

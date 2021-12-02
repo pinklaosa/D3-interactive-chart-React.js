@@ -2,66 +2,41 @@ import { DataGrid } from "@material-ui/data-grid";
 import React, { useEffect, useState } from "react";
 
 const SimpleDataGrid = (props) => {
-  const { data } = props;
-  const formatDate = (datetime) =>
-    datetime.getDate() +
-    "-" +
-    (datetime.getMonth() + 1) +
-    "-" +
-    datetime.getFullYear() +
-    "  " +
-    datetime.getHours() +
-    ":" +
-    datetime.getMinutes() +
-    ":" +
-    datetime.getSeconds();
-
-  const columnsData = data.map(({ col }) => {
+  const { data, rawdata } = props;
+  const colsData = rawdata.columns.map((d) => {
     return {
-      field: col.toLowerCase(),
-      headerName: col,
+      field: d,
+      headerName: d,
       width: 200,
-      editable: true,
     };
   });
+
   const columns = [
     {
       field: "id",
       headerName: "ID",
-      width: 150,
-      editable: true,
     },
     {
-      field: "date",
+      field: "Date",
       headerName: "Date",
       width: 200,
-      editable: true,
     },
-    ...columnsData,
+    ...colsData,
   ];
-
-  const fullDate = data.map((d) => d.values.map((v) => v.date));
-  const date = fullDate.pop();
-  const rows = date.map((d, index) => {
-    return {
-      id: index + 1,
-      date: formatDate(d),
-      chrome: "c",
-      firefox:"f",
-      internet_explorer:"i",
-      opera:"o",
-      safari:"s",
-    };
+  const rows = rawdata.map((d,index)=>{
+    return{
+      id:index+1,
+      ...d,
+    }
   });
   console.log(rows);
-  console.log(columns);
+
   return (
-    <div style={{ height: 400, width: "100%" }}>
+    <div style={{ height: 600, width: "100%" }}>
       <DataGrid
           rows={rows}
           columns={columns}
-          pageSize={100}
-          checkboxSelection
+          pageSize={50}
           disableSelectionOnClick
         />
     </div>
