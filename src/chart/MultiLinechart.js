@@ -10,6 +10,8 @@ const MultiLinechart = (props) => {
   }, [data]);
 
   const drawChart = () => {
+    //remove prev svg
+    d3.select("svg").remove();
     //color line
     const color = d3.scaleOrdinal(d3.schemeCategory10);
     const curve = d3.curveLinear;
@@ -111,7 +113,7 @@ const MultiLinechart = (props) => {
       .data(data)
       .enter()
       .append("text")
-      .attr("x", width-430)
+      .attr("x", width - 430)
       .attr("y", (d, i) => margin.top + 10 + i * 25)
       .style("fill", (d) => color(d))
       .text((data) => data.col)

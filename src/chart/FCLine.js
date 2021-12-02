@@ -1,8 +1,10 @@
-import * as d3 from "d3";
-import * as fc from "d3fc";
+import * as React from 'react';
 
 const FCLine = () => {
-    
-   return <div id="chart"></div>;
+  
+  return (
+    <div>
+    </div>
+  );
 };
 export default FCLine;

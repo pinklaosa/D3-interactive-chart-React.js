@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import * as d3 from "d3";
-import * as fc from "d3fc";
 
 function Linechart(props) {
   const { data, width, height } = props;

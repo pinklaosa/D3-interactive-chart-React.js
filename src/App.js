@@ -5,10 +5,12 @@ import Linechart from "./chart/Linechart";
 import MultiLinechart from "./chart/MultiLinechart";
 import Navbar from "./component/Navbar";
 import FCLine from "./chart/FCLine";
+import SimpleDataGrid from './component/SimpleDataGrid';
 
 function App() {
   const [data, setData] = useState([]);
   const parseDate = d3.timeParse("%Y-%m");
+  // const parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S");
   useEffect(() => {
     d3.csv("data/data-extant.csv").then((d) => {
       const loaddata = d.columns.slice(1).map((sensor) => {
@@ -25,6 +27,7 @@ function App() {
       setData(loaddata);
     });
   }, []);
+   
   return (
     <div className="App">
       <Router>
@@ -50,6 +53,11 @@ function App() {
               width={1500}
               margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
             ></MultiLinechart>
+          </Route>
+          <Route path="/simpledatagrid">
+            <SimpleDataGrid
+              data={data}
+            ></SimpleDataGrid>
           </Route>
         </Switch>
       </Router>
