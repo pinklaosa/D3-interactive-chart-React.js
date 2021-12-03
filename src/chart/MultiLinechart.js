@@ -1,9 +1,11 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as d3 from "d3";
+import SimpleDataGrid from "../component/SimpleDataGrid";
 
 const MultiLinechart = (props) => {
-  const { data, height, width, margin } = props;
-
+  const { data, height, width, margin, rawdata } = props;
+  const [datex0,setDatex0] = useState("2003-03");
+  const [datex1,setDatex1] = useState("2004-11");
   useEffect(() => {
     if (data.length > 0) {
       drawChart();
@@ -11,17 +13,29 @@ const MultiLinechart = (props) => {
   }, [data]);
 
   const drawChart = () => {
-    //remove prev svg
-    d3.select("svg").remove();
+    //format date to string
+    const formatDate = (datetime) =>
+      datetime.getDate() +
+      "/" +
+      (datetime.getMonth() + 1) +
+      "/" +
+      datetime.getFullYear() +
+      "  " +
+      datetime.getHours() +
+      ":" +
+      datetime.getMinutes() +
+      ":" +
+      datetime.getSeconds();
+
+    const reformatDate = (datetime) =>
+      datetime.getFullYear() + "-" + (datetime.getMonth() + 1);
+
+    const container = d3.select("#container");
     //color line
     const color = d3.scaleOrdinal(d3.schemeCategory10);
     const curve = d3.curveLinear;
     //setting up svg
-    const svg = d3
-      .select("#multi")
-      .append("svg")
-      .attr("width", width)
-      .attr("height", height);
+    const svg = d3.select("svg");
 
     //setting the scaling
     const x = d3
@@ -80,19 +94,30 @@ const MultiLinechart = (props) => {
     function brushed({ selection }) {
       if (selection == null) {
         lines.attr("stroke", (data) => color(data));
-        d3.selectAll(".details").remove();
+        d3.selectAll(".selected_date").remove();
       } else {
         const [x0, x1] = selection.map(x.invert);
-        console.log("x0 : " + x0 + "| x1 : " + x1);
-        const brushData = data.map(({ col, values }) => {
-          return {
-            col,
-            values: values.filter(
-              ({ date }) =>
-                date.getTime() >= x0.getTime() && date.getTime() <= x1.getTime()
-            ),
-          };
-        });
+        // console.log("x0 : " + x0 + "| x1 : " + x1);
+        const selectdate = "Date : " + formatDate(x0) + " - " + formatDate(x1);
+        setDatex0(reformatDate(x0));
+        setDatex1(reformatDate(x1));
+        // const brushData = data.map(({ col, values }) => {
+        //   return {
+        //     col,
+        //     values: values.filter(
+        //       ({ date }) =>
+        //         date.getTime() >= x0.getTime() && date.getTime() <= x1.getTime()
+        //     ),
+        //   };
+        // });
+        //select date tool
+        d3.selectAll(".selected_date").remove();
+        const select_date = details
+          .append("div")
+          .style("padding-left", `${margin.left}px`)
+          .attr("class", "selected_date");
+
+        select_date.append("p").text(selectdate);
         lines.attr("stroke", "rgba(0, 0, 0, 0.171)");
       }
     }
@@ -125,9 +150,23 @@ const MultiLinechart = (props) => {
     svg.append("g").attr("class", "brush").call(brush);
 
     //other tools
-    const details = d3.select("#multi").append("div").attr("class", "details");
-  };
+    const details = d3
+      .select("#details")
+      .append("div")
+      .attr("class", "details");
 
-  return <div id="multi"></div>;
+    d3.select("#table_datagrid").style("padding","20px "+`${margin.left}`+"px")
+  };
+  console.log("x0"+datex0);
+  console.log("x1"+datex1);
+  return (
+    <div id="container">
+      <svg width={width} height={height} id="multi"></svg>
+      <div id="details"></div>
+      <div id="table_datagrid">
+        <SimpleDataGrid rawdata={rawdata} x0={datex0} x1={datex1}></SimpleDataGrid>
+      </div>
+    </div>
+  );
 };
 export default MultiLinechart;
