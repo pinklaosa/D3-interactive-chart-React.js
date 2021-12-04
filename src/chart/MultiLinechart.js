@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import * as d3 from "d3";
-import SimpleDataGrid from "../component/SimpleDataGrid";
+import SelectDataTable from "../component/SelectDataTable";
 
 const MultiLinechart = (props) => {
   const { data, height, width, margin, rawdata } = props;
-  const [datex0,setDatex0] = useState("2003-03");
-  const [datex1,setDatex1] = useState("2004-11");
+  const [datex0, setDatex0] = useState("");
+  const [datex1, setDatex1] = useState("");
   useEffect(() => {
     if (data.length > 0) {
       drawChart();
@@ -26,6 +26,19 @@ const MultiLinechart = (props) => {
       datetime.getMinutes() +
       ":" +
       datetime.getSeconds();
+
+    // const reformatDate = (datetime) =>
+    //   datetime.getFullYear() +
+    //   "-" +
+    //   (datetime.getMonth() + 1) +
+    //   "-" +
+    //   datetime.getDate() +
+    //   "  " +
+    //   datetime.getHours() +
+    //   ":" +
+    //   datetime.getMinutes() +
+    //   ":" +
+    //   datetime.getSeconds();
 
     const reformatDate = (datetime) =>
       datetime.getFullYear() + "-" + (datetime.getMonth() + 1);
@@ -95,6 +108,8 @@ const MultiLinechart = (props) => {
       if (selection == null) {
         lines.attr("stroke", (data) => color(data));
         d3.selectAll(".selected_date").remove();
+        setDatex0("");
+        setDatex1("");
       } else {
         const [x0, x1] = selection.map(x.invert);
         // console.log("x0 : " + x0 + "| x1 : " + x1);
@@ -155,16 +170,21 @@ const MultiLinechart = (props) => {
       .append("div")
       .attr("class", "details");
 
-    d3.select("#table_datagrid").style("padding","20px "+`${margin.left}`+"px")
+    d3.select("#table_datagrid").style(
+      "padding",
+      "20px " + `${margin.left}` + "px"
+    );
   };
-  console.log("x0"+datex0);
-  console.log("x1"+datex1);
   return (
     <div id="container">
       <svg width={width} height={height} id="multi"></svg>
       <div id="details"></div>
       <div id="table_datagrid">
-        <SimpleDataGrid rawdata={rawdata} x0={datex0} x1={datex1}></SimpleDataGrid>
+        <SelectDataTable
+          rawdata={rawdata}
+          x0={datex0}
+          x1={datex1}
+        ></SelectDataTable>
       </div>
     </div>
   );
