@@ -7,7 +7,7 @@ const Navbar = () =>{
             <Link to="/">Home</Link>|
             <Link to="/simpleline">Simple LineChart</Link>|
             <Link to="/multiline">Multi LineChart</Link>|
-            <Link to="/simpledatagrid">Simple Data Grid</Link>
+            <Link to="/linecolor">Change line color</Link>
         </div>
     )
 }

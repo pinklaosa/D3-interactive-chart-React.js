@@ -8,8 +8,6 @@ const SelectDataTable = (props) => {
   //   const parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S");
   //   console.log(parseDate(x0));
   //   console.log(parseDate(x1));
-  console.log(x0);
-  console.log(x1);
   const colsData = rawdata.columns.map((d) => {
     return {
       field: d,
@@ -40,8 +38,7 @@ const SelectDataTable = (props) => {
       ...d,
     };
   });
-  if (x0 === "" && x1 === "") {
-  }
+
   const rows = rawrows.filter((r) => r.CheckTimeStamp == true);
   return (
     <div style={{ height: 600, width: "100%" }}>

@@ -6,6 +6,7 @@ const MultiLinechart = (props) => {
   const { data, height, width, margin, rawdata } = props;
   const [datex0, setDatex0] = useState("");
   const [datex1, setDatex1] = useState("");
+  const parseDate = d3.timeParse("%Y-%m");
   useEffect(() => {
     if (data.length > 0) {
       drawChart();
@@ -80,20 +81,23 @@ const MultiLinechart = (props) => {
     //plot line from the data
     const line = d3
       .line()
-      .curve(curve)
       .x((data) => x(data.date))
       .y((data) => y(data.vSensor));
 
-    const lines = svg
-      .selectAll("lines")
-      .data(data)
-      .enter()
-      .append("g")
-      .append("path")
-      .attr("fill", "none")
-      .attr("class", "line")
-      .attr("stroke", (d) => color(d))
-      .attr("d", (data) => line(data.values));
+    const testDate1 = parseDate("2009-09");
+    const testDate2 = parseDate("2012-04");
+
+    const lines = svg.selectAll("lines").data(data).enter().append("g");
+
+    const mainLine = () => {
+      lines
+        .append("path")
+        .attr("fill", "none")
+        .attr("class", "line")
+        .attr("stroke", (d) => color(d))
+        .attr("d", (data) => line(data.values));
+    };
+    mainLine();
 
     //brush tool
     const brush = d3
@@ -110,6 +114,8 @@ const MultiLinechart = (props) => {
         d3.selectAll(".selected_date").remove();
         setDatex0("");
         setDatex1("");
+        d3.selectAll(".line").remove();
+        mainLine();
       } else {
         const [x0, x1] = selection.map(x.invert);
         // console.log("x0 : " + x0 + "| x1 : " + x1);
@@ -131,11 +137,47 @@ const MultiLinechart = (props) => {
           .append("div")
           .style("padding-left", `${margin.left}px`)
           .attr("class", "selected_date");
-
         select_date.append("p").text(selectdate);
-        lines.attr("stroke", "rgba(0, 0, 0, 0.171)");
+
+        d3.selectAll(".line").remove();
+        brushLine(x0,x1);
       }
     }
+    
+    const brushLine = (x0, x1) => {
+      const line1 = lines
+        .append("path")
+        .attr("fill", "none")
+        .attr("class", "line")
+        .attr("stroke", "rgba(0, 0, 0, 0.171)")
+        .attr("d", (data) =>
+          line(data.values.filter((d) => d.date.getTime() <= x0.getTime()))
+        );
+
+      const line2 = lines
+        .append("path")
+        .attr("fill", "none")
+        .attr("class", "line")
+        .attr("stroke", (d) => color(d))
+        .attr("d", (data) =>
+          line(
+            data.values.filter(
+              (d) =>
+                d.date.getTime() >= x0.getTime() &&
+                d.date.getTime() <= x1.getTime()
+            )
+          )
+        );
+
+      const line3 = lines
+        .append("path")
+        .attr("fill", "none")
+        .attr("class", "line")
+        .attr("stroke", "rgba(0, 0, 0, 0.171)")
+        .attr("d", (data) =>
+          line(data.values.filter((d) => d.date.getTime() >= x1.getTime()))
+        );
+    };
 
     //legend
     const legend = svg.append("g").attr("class", "legend");
@@ -160,6 +202,8 @@ const MultiLinechart = (props) => {
       .text((data) => data.col)
       .attr("text-anchor", "left")
       .style("alignment-baseline", "middle");
+
+    //change line
 
     //call d3 tools
     svg.append("g").attr("class", "brush").call(brush);

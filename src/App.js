@@ -4,8 +4,8 @@ import * as d3 from "d3";
 import Linechart from "./chart/Linechart";
 import MultiLinechart from "./chart/MultiLinechart";
 import Navbar from "./component/Navbar";
-import FCLine from "./chart/FCLine";
 import SimpleDataGrid from './component/SimpleDataGrid';
+import ChangeLineColor from "./chart/ChangeLineColor";
 
 function App() {
   const [data, setData] = useState([]);
@@ -37,9 +37,6 @@ function App() {
           <Route exact path="/">
             <h1>Home</h1>
           </Route>
-          <Route path="/d3fc">
-            <FCLine/>
-          </Route>
           <Route path="/simpleline">
             <Linechart
               data={[10, 20, 80, 5, 60, 30, 40, 50]}
@@ -56,12 +53,15 @@ function App() {
               rawdata={rawdata}
             ></MultiLinechart>
           </Route>
-          <Route path="/simpledatagrid">
+          <Route>
+            <ChangeLineColor/>
+          </Route>
+          {/* <Route path="/simpledatagrid">
             <SimpleDataGrid
               data={data}
               rawdata={rawdata}
             ></SimpleDataGrid>
-          </Route>
+          </Route> */}
         </Switch>
       </Router>
     </div>
