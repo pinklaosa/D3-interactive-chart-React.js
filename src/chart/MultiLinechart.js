@@ -84,9 +84,6 @@ const MultiLinechart = (props) => {
       .x((data) => x(data.date))
       .y((data) => y(data.vSensor));
 
-    const testDate1 = parseDate("2009-09");
-    const testDate2 = parseDate("2012-04");
-
     const lines = svg.selectAll("lines").data(data).enter().append("g");
 
     const mainLine = () => {
@@ -94,8 +91,10 @@ const MultiLinechart = (props) => {
         .append("path")
         .attr("fill", "none")
         .attr("class", "line")
+        .attr("id",(d)=> d.col)
         .attr("stroke", (d) => color(d))
-        .attr("d", (data) => line(data.values));
+        .attr("stroke-width","1.5px")
+        .attr("d", (data) => line(data.values))
     };
     mainLine();
 
@@ -158,6 +157,8 @@ const MultiLinechart = (props) => {
         .append("path")
         .attr("fill", "none")
         .attr("class", "line")
+        .attr("id","line-hightlight")
+        .attr("stroke-width","1.5px")
         .attr("stroke", (d) => color(d))
         .attr("d", (data) =>
           line(
@@ -179,6 +180,26 @@ const MultiLinechart = (props) => {
         );
     };
 
+    //zoom
+    const extent = [
+      [margin.left, margin.top],
+      [width - margin.right, height - margin.top],
+    ];
+
+    const zoom = d3
+      .zoom()
+      .scaleExtent([1, 10])
+      .translateExtent(extent)
+      .extent(extent)
+      .on("zoom", zoomed);
+
+    function zoomed(event) {
+      const xz = event.transform.rescaleX(x);
+      const zoomLine = line.x((data) => xz(data.date));
+      svg.selectAll(".line").attr("d", (data) => zoomLine(data.values));
+      svg.select(".axis--x").call(d3.axisBottom(xz));
+    }
+
     //legend
     const legend = svg.append("g").attr("class", "legend");
     legend
@@ -186,28 +207,49 @@ const MultiLinechart = (props) => {
       .data(data)
       .enter()
       .append("circle")
+      .attr("name",(data)=>data.col)
+      .attr("class","circle-legend")
       .attr("cx", width - 450)
       .attr("cy", (d, i) => margin.top + 10 + i * 25)
       .attr("r", 7)
-      .style("fill", (d) => color(d));
+      .style("fill", (d) => color(d))
+      .on("mouseover", function(e){
+        //Line Highlight
+        svg.selectAll(".circle-legend").style("fill","rgba(0, 0, 0, 0.171)")
+        d3.select(this).style("fill",(d) => color(d)).attr("r","10");
+        const name = d3.select(this).attr("name");
+        svg.selectAll(".line").attr("stroke","rgba(0, 0, 0, 0.171)"); 
+        svg.selectAll("#"+name).attr("stroke",(d) => color(d)).attr("stroke-width","3px");
+        svg.selectAll(".text-legend").style("fill","rgba(0, 0, 0, 0.171)");
+        svg.selectAll("#text-legend-"+name).style("font-weight","900").style("fill",(d) => color(d));
+      })
+      .on("mouseout", function(e){
+        //Line default
+        svg.selectAll(".circle-legend").style("fill",(d) => color(d))
+        d3.select(this).style("fill", (d) => color(d)).attr("r","7");
+        svg.selectAll(".line").attr("stroke",(d) => color(d)).attr("stroke-width","1.5px");
+        svg.selectAll(".text-legend").style("font-weight","400").style("fill",(d) => color(d));
+      })
+
 
     legend
       .selectAll(".lines")
       .data(data)
       .enter()
       .append("text")
+      .attr("id",(data)=>"text-legend-"+data.col)
+      .attr("class","text-legend")
       .attr("x", width - 430)
       .attr("y", (d, i) => margin.top + 10 + i * 25)
       .style("fill", (d) => color(d))
+      .style("font-weight","400")
       .text((data) => data.col)
       .attr("text-anchor", "left")
-      .style("alignment-baseline", "middle");
-
-    //change line
+      .style("alignment-baseline", "middle")
 
     //call d3 tools
     svg.append("g").attr("class", "brush").call(brush);
-
+    // svg.call(zoom);
     //other tools
     const details = d3
       .select("#details")
