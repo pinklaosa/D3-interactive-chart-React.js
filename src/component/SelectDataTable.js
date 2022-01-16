@@ -12,7 +12,7 @@ const SelectDataTable = (props) => {
     return {
       field: d,
       headerName: d,
-      width: 200,
+      width: 160,
     };
   });
 
