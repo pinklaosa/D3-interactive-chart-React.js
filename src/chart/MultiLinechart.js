@@ -22,7 +22,7 @@ const MultiLinechart = (props) => {
   const [datex1, setDatex1] = useState("");
   const [rowsDate, setRows] = useState([
     {
-      id: 0,
+      id: 1,
       start: reformatDate(d3.min(data, (d) => d3.min(d.values, (v) => v.date))),
       end: reformatDate(d3.max(data, (d) => d3.max(d.values, (v) => v.date))),
     },
@@ -109,6 +109,8 @@ const MultiLinechart = (props) => {
         .append("path")
         .attr("fill", "none")
         .attr("class", "line")
+        .transition()
+        .duration(2000)
         .attr("id", (d) => d.col)
         .attr("stroke", (d) => color(d))
         .attr("stroke-width", "1.5px")
@@ -308,7 +310,6 @@ const MultiLinechart = (props) => {
   return (
     <div id="container">
       <svg width={width} height={height} id="multi"></svg>
-
       <Grid container spacing={3}>
         <Grid item xs={1}>
           <Button

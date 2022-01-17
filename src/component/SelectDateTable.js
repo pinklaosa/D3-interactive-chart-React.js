@@ -5,30 +5,9 @@ import * as d3 from "d3";
 
 const SelectDateTable = (props) => {
   const { rows } = props;
-  let radioChecked = [rows[0].id];
 
-  const [selectionModel, setSelectionModel] = React.useState(radioChecked);
-  radioChecked = selectionModel;
-
-  const selectedRow = rows.filter((item) => {
-    return item.id === selectionModel[0];
-  });
+  const [selectionModel, setSelectionModel] = React.useState([]);
   const columns = [
-    {
-      field: "radiobutton",
-      headerName: " ",
-      width: 60,
-      sortable: false,
-      renderCell: (params) => {
-        return (
-          <Radio
-            checked={radioChecked[0] === params.id}
-            value={params.id}
-            color="primary"
-          />
-        );
-      },
-    },
     {
       field: "id",
       headerName: "ID",
@@ -52,11 +31,19 @@ const SelectDateTable = (props) => {
         rows={rows}
         columns={columns}
         pageSize={20}
+        hideFooterPagination
+        checkboxSelection
+        disableSelectionOnClick
         selectionModel={selectionModel}
         onSelectionModelChange={(newSelectionModel) => {
           setSelectionModel(newSelectionModel);
         }}
       />
+      {selectionModel.map((val) => (
+        <h1>
+          {rows[val - 1].start} - {rows[val - 1].end}
+        </h1>
+      ))}
     </div>
   );
 };
