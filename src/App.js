@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import * as d3 from "d3";
 import Linechart from "./chart/Linechart";
-import MultiLinechart from "./chart/MultiLinechart";
+import MultiLinechartPage from "./page/MultiLinechartPage";
 import Navbar from "./component/Navbar";
 import SimpleDataGrid from './component/SimpleDataGrid';
 import ChangeLineColor from "./chart/ChangeLineColor";
@@ -45,13 +45,13 @@ function App() {
             />
           </Route>
           <Route path="/multiline">
-            <MultiLinechart
+            <MultiLinechartPage
               data={data}
               height={550}
               width={1500}
               margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
               rawdata={rawdata}
-            ></MultiLinechart>
+            ></MultiLinechartPage>
           </Route>
           <Route>
             <ChangeLineColor/>

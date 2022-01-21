@@ -3,10 +3,9 @@ import Radio from "@material-ui/core/Radio";
 import React, { useEffect, useState } from "react";
 import * as d3 from "d3";
 
-const SelectDateTable = (props) => {
-  const { rows } = props;
-
-  const [selectionModel, setSelectionModel] = React.useState([]);
+const SelectDateTable = ({ rows, sendDate }) => {
+  const [selectionModel, setSelectionModel] = useState([]);
+  const [selectedRows,setSelectedRows] = useState([]);
   const columns = [
     {
       field: "id",
@@ -35,15 +34,16 @@ const SelectDateTable = (props) => {
         checkboxSelection
         disableSelectionOnClick
         selectionModel={selectionModel}
-        onSelectionModelChange={(newSelectionModel) => {
-          setSelectionModel(newSelectionModel);
+        onSelectionModelChange={(ids) => {
+          setSelectionModel(ids);
         }}
       />
-      {selectionModel.map((val) => (
-        <h1>
-          {rows[val - 1].start} - {rows[val - 1].end}
-        </h1>
-      ))}
+      {
+        sendDate(selectionModel)
+      }
+      <pre style={{ fontSize: 10 }}>
+        {JSON.stringify(selectionModel, null, 4)}
+      </pre>
     </div>
   );
 };
