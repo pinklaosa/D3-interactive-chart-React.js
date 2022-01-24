@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import * as d3 from "d3";
 import SelectDataTable from "../component/SelectDataTable";
 import Grid from "@material-ui/core/Grid";
@@ -23,17 +23,22 @@ const MultiLinechartPage = (props) => {
   const [rowsDate, setRows] = useState([]);
   const [brushToolCheck, setBrushToolCheck] = useState("on");
 
-  const pullX01 = (x0, x1) => {
+  const pullX1 = useCallback((x0,x1) => {
     setDatex0(x0);
     setDatex1(x1);
-  };
-  
+  },[setDatex1,setDatex0]);
+
+  // const pullX01 = (x0, x1) => {
+  //   setDatex0(x0);
+  //   setDatex1(x1);
+  // };
+
   const sendDate = (val) => {
     if (val.length > 0) {
       setBrushToolCheck("off");
       // setListDate(val);
       let listSelected = val.map((v) => rowsDate.filter((r) => r.id == v));
-      console.log(listSelected);
+      setListDate(listSelected);
     } else {
       setBrushToolCheck("on");
     }
@@ -46,7 +51,7 @@ const MultiLinechartPage = (props) => {
         width={width}
         margin={margin}
         brushToolCheck={brushToolCheck}
-        pullX01={pullX01}
+        pullX1={pullX1}
       ></MultiLinechart>
       <Grid container spacing={3}>
         <Grid item xs={1}>
@@ -79,11 +84,11 @@ const MultiLinechartPage = (props) => {
             ></SelectDateTable>
           </Grid>
           <Grid item xs={9}>
-            <SelectDataTable
+            {/* <SelectDataTable
               rawdata={rawdata}
               x0={datex0}
               x1={datex1}
-            ></SelectDataTable>
+            ></SelectDataTable> */}
           </Grid>
         </Grid>
       </div>

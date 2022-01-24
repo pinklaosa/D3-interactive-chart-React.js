@@ -24,6 +24,7 @@ const SelectDateTable = ({ rows, sendDate }) => {
     },
   ];
 
+  // sendDate(selectionModel)
   return (
     <div style={{ height: 600, width: "100%" }}>
       <DataGrid
@@ -36,11 +37,9 @@ const SelectDateTable = ({ rows, sendDate }) => {
         selectionModel={selectionModel}
         onSelectionModelChange={(ids) => {
           setSelectionModel(ids);
+          sendDate(ids);
         }}
       />
-      {
-        sendDate(selectionModel)
-      }
       <pre style={{ fontSize: 10 }}>
         {JSON.stringify(selectionModel, null, 4)}
       </pre>

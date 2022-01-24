@@ -1,20 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo, useRef } from "react";
 import { useToggle } from "rooks";
 import * as d3 from "d3";
 
 const MultiLinechart = (props) => {
-  const {
-    data,
-    height,
-    width,
-    margin,
-    brushToolCheck,
-    pullX01,
-  } = props;
+  const { data, height, width, margin, brushToolCheck ,pullX1} = props;
+
+  const [brushTool, setBrushTool] = useState("");
+  const renders = useRef(0);
 
   //d3 function Parse date to datetime
   const parseDate = d3.timeParse("%Y-%m");
-
   //Change formatdate to String
   const formatDate = (datetime) =>
     datetime.getDate() +
@@ -40,7 +35,6 @@ const MultiLinechart = (props) => {
   }, [data]);
 
   const drawChart = () => {
-    console.log(brushToolCheck);
     const container = d3.select("#container");
     //color line
     const color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -110,14 +104,14 @@ const MultiLinechart = (props) => {
       if (selection == null) {
         lines.attr("stroke", (data) => color(data));
         d3.selectAll(".selected_date").remove();
-        pullX01("", "");
+        // pullX01("", "");
         d3.selectAll(".line").remove();
         mainLine();
       } else {
         const [x0, x1] = selection.map(x.invert);
         // console.log("x0 : " + x0 + "| x1 : " + x1);
         const selectdate = "Date : " + formatDate(x0) + " - " + formatDate(x1);
-        pullX01(reformatDate(x0), reformatDate(x1));
+        pullX1(reformatDate(x0), reformatDate(x1));
         // const brushData = data.map(({ col, values }) => {
         //   return {
         //     col,
@@ -259,13 +253,12 @@ const MultiLinechart = (props) => {
       .style("alignment-baseline", "middle");
 
     //call d3 tools
-    if(brushToolCheck == "on"){
+    if (brushToolCheck == "on") {
       svg.append("g").attr("class", "brush").call(brush);
-    }else if(brushToolCheck == "off"){
+    } else if (brushToolCheck == "off") {
       d3.selectAll(".brush").remove();
     }
     // svg.call(zoom);
-
 
     //other tools
     const details = d3
@@ -279,6 +272,11 @@ const MultiLinechart = (props) => {
     );
   };
 
-  return <svg width={width} height={height} id="multi"></svg>;
+  return (
+    <>
+      <div> Multiline.js renders : {renders.current++}</div>
+      <svg width={width} height={height} id="multi"></svg>
+    </>
+  );
 };
-export default MultiLinechart;
+export default memo(MultiLinechart);
