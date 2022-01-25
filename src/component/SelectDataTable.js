@@ -1,9 +1,10 @@
 import { DataGrid } from "@material-ui/data-grid";
-import React, { useEffect, useState } from "react";
+import React, { useRef, memo } from "react";
 import * as d3 from "d3";
 
 const SelectDataTable = (props) => {
   const { rawdata, x0, x1 } = props;
+  const renders = useRef(0);
   const parseDate = d3.timeParse("%Y-%m");
   //   const parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S");
   //   console.log(parseDate(x0));
@@ -42,6 +43,7 @@ const SelectDataTable = (props) => {
   const rows = rawrows.filter((r) => r.CheckTimeStamp == true);
   return (
     <div style={{ height: 600, width: "100%" }}>
+      <div> SelectDataTable.js renders : {renders.current++}</div>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -51,4 +53,4 @@ const SelectDataTable = (props) => {
     </div>
   );
 };
-export default SelectDataTable;
+export default memo(SelectDataTable);

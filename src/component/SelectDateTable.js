@@ -1,11 +1,12 @@
 import { DataGrid } from "@material-ui/data-grid";
 import Radio from "@material-ui/core/Radio";
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState,memo } from "react";
 import * as d3 from "d3";
 
 const SelectDateTable = ({ rows, sendDate }) => {
   const [selectionModel, setSelectionModel] = useState([]);
   const [selectedRows,setSelectedRows] = useState([]);
+  const renders = useRef(0);
   const columns = [
     {
       field: "id",
@@ -27,6 +28,7 @@ const SelectDateTable = ({ rows, sendDate }) => {
   // sendDate(selectionModel)
   return (
     <div style={{ height: 600, width: "100%" }}>
+      <div> SelectDate.js renders : {renders.current++}</div>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -46,4 +48,4 @@ const SelectDateTable = ({ rows, sendDate }) => {
     </div>
   );
 };
-export default SelectDateTable;
+export default memo(SelectDateTable);

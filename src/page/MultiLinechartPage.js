@@ -28,12 +28,8 @@ const MultiLinechartPage = (props) => {
     setDatex1(x1);
   },[setDatex1,setDatex0]);
 
-  // const pullX01 = (x0, x1) => {
-  //   setDatex0(x0);
-  //   setDatex1(x1);
-  // };
 
-  const sendDate = (val) => {
+  const sendDate = useCallback((val) => {
     if (val.length > 0) {
       setBrushToolCheck("off");
       // setListDate(val);
@@ -42,7 +38,8 @@ const MultiLinechartPage = (props) => {
     } else {
       setBrushToolCheck("on");
     }
-  };
+  },[setListDate]);
+
   return (
     <div id="container">
       <MultiLinechart
@@ -84,11 +81,11 @@ const MultiLinechartPage = (props) => {
             ></SelectDateTable>
           </Grid>
           <Grid item xs={9}>
-            {/* <SelectDataTable
+            <SelectDataTable
               rawdata={rawdata}
               x0={datex0}
               x1={datex1}
-            ></SelectDataTable> */}
+            ></SelectDataTable>
           </Grid>
         </Grid>
       </div>

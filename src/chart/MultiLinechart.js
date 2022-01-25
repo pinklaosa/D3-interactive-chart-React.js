@@ -1,9 +1,9 @@
-import React, { useEffect, useState, memo, useRef } from "react";
+import React, { useEffect, useState, memo, useRef ,useMemo} from "react";
 import { useToggle } from "rooks";
 import * as d3 from "d3";
 
 const MultiLinechart = (props) => {
-  const { data, height, width, margin, brushToolCheck ,pullX1} = props;
+  const { data, height, width, margin, brushToolCheck, pullX1 } = props;
 
   const [brushTool, setBrushTool] = useState("");
   const renders = useRef(0);
@@ -27,6 +27,8 @@ const MultiLinechart = (props) => {
   //Reformatdate datetime to String
   const reformatDate = (datetime) =>
     datetime.getFullYear() + "-" + (datetime.getMonth() + 1);
+
+  
 
   useEffect(() => {
     if (data.length > 0) {
@@ -98,38 +100,43 @@ const MultiLinechart = (props) => {
         [margin.left, margin.top],
         [width - 500, height - margin.bottom],
       ])
-      .on("start brush end", brushed);
+      .on("start brush", brushing)
+      .on("end", brushed);
+
+    function brushing({ selection }) {
+      const [x0, x1] = selection.map(x.invert);
+      // console.log("x0 : " + x0 + "| x1 : " + x1);
+      const selectdate = "Date : " + formatDate(x0) + " - " + formatDate(x1);
+      // const brushData = data.map(({ col, values }) => {
+      //   return {
+      //     col,
+      //     values: values.filter(
+      //       ({ date }) =>
+      //         date.getTime() >= x0.getTime() && date.getTime() <= x1.getTime()
+      //     ),
+      //   };
+      // });
+      //select date tool
+      d3.selectAll(".selected_date").remove();
+      const select_date = details
+        .append("div")
+        .style("padding-left", `${margin.left}px`)
+        .attr("class", "selected_date");
+      select_date.append("p").text(selectdate);
+      d3.selectAll(".line").remove();
+      brushLine(x0, x1);
+    }
 
     function brushed({ selection }) {
       if (selection == null) {
         lines.attr("stroke", (data) => color(data));
         d3.selectAll(".selected_date").remove();
-        // pullX01("", "");
+        pullX1("", "");
         d3.selectAll(".line").remove();
         mainLine();
       } else {
         const [x0, x1] = selection.map(x.invert);
-        // console.log("x0 : " + x0 + "| x1 : " + x1);
-        const selectdate = "Date : " + formatDate(x0) + " - " + formatDate(x1);
         pullX1(reformatDate(x0), reformatDate(x1));
-        // const brushData = data.map(({ col, values }) => {
-        //   return {
-        //     col,
-        //     values: values.filter(
-        //       ({ date }) =>
-        //         date.getTime() >= x0.getTime() && date.getTime() <= x1.getTime()
-        //     ),
-        //   };
-        // });
-        //select date tool
-        d3.selectAll(".selected_date").remove();
-        const select_date = details
-          .append("div")
-          .style("padding-left", `${margin.left}px`)
-          .attr("class", "selected_date");
-        select_date.append("p").text(selectdate);
-        d3.selectAll(".line").remove();
-        brushLine(x0, x1);
       }
     }
 
