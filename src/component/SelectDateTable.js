@@ -39,7 +39,7 @@ const SelectDateTable = ({ rows, sendDate }) => {
         selectionModel={selectionModel}
         onSelectionModelChange={(ids) => {
           setSelectionModel(ids);
-          sendDate(ids);
+          sendDate(ids,rows);
         }}
       />
       <pre style={{ fontSize: 10 }}>

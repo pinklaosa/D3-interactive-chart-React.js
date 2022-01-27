@@ -1,15 +1,17 @@
-import React, { useEffect, useState, memo, useRef ,useMemo} from "react";
+import React, { useEffect, useState, memo, useRef, useMemo } from "react";
 import { useToggle } from "rooks";
 import * as d3 from "d3";
 
 const MultiLinechart = (props) => {
-  const { data, height, width, margin, brushToolCheck, pullX1 } = props;
+  const { data, height, width, margin, brushToolCheck, listDate , pullX1 } = props;
 
-  const [brushTool, setBrushTool] = useState("");
   const renders = useRef(0);
+
+  // console.log("Multiline Comp : " + brushToolCheck);
 
   //d3 function Parse date to datetime
   const parseDate = d3.timeParse("%Y-%m");
+
   //Change formatdate to String
   const formatDate = (datetime) =>
     datetime.getDate() +
@@ -28,15 +30,23 @@ const MultiLinechart = (props) => {
   const reformatDate = (datetime) =>
     datetime.getFullYear() + "-" + (datetime.getMonth() + 1);
 
-  
-
   useEffect(() => {
-    if (data.length > 0) {
-      drawChart();
-    }
-  }, [data]);
+    drawChart();
+  }, [data,brushToolCheck,listDate]);
 
   const drawChart = () => {
+
+    // console.log("drawChart Func : " + brushToolCheck);
+    
+    // console.log(listDate);
+    d3.select("svg").remove();
+
+    const l = d3
+      .select("#multilinechart")
+      .append("svg")
+      .attr("height", height)
+      .attr("width", width);
+    
     const container = d3.select("#container");
     //color line
     const color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -177,6 +187,16 @@ const MultiLinechart = (props) => {
         );
     };
 
+    //select highlight line
+    const selectedLine = (listDate) =>{
+      let sectionLine = listDate.length;
+      console.log(sectionLine);
+    }
+
+    if(brushToolCheck == "off"){
+      selectedLine(listDate);
+    }
+
     //zoom
     const extent = [
       [margin.left, margin.top],
@@ -264,7 +284,9 @@ const MultiLinechart = (props) => {
       svg.append("g").attr("class", "brush").call(brush);
     } else if (brushToolCheck == "off") {
       d3.selectAll(".brush").remove();
+      d3.selectAll(".selected_date").remove();
     }
+    // svg.append("g").attr("class", "brush").call(brush);
     // svg.call(zoom);
 
     //other tools
@@ -279,10 +301,12 @@ const MultiLinechart = (props) => {
     );
   };
 
+  // drawChart(data);
+
   return (
     <>
       <div> Multiline.js renders : {renders.current++}</div>
-      <svg width={width} height={height} id="multi"></svg>
+      <div id="multilinechart"></div>
     </>
   );
 };

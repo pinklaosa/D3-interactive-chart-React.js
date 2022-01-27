@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
-import * as d3 from "d3";
+import React, { useState, useCallback } from "react";
 import SelectDataTable from "../component/SelectDataTable";
 import Grid from "@material-ui/core/Grid";
 import SelectDateTable from "../component/SelectDateTable";
@@ -16,29 +15,33 @@ const useStyles = makeStyles((theme) => ({
 const MultiLinechartPage = (props) => {
   const classes = useStyles();
   const { data, rawdata, height, width, margin } = props;
-
+  
   const [datex0, setDatex0] = useState("");
   const [datex1, setDatex1] = useState("");
   const [listDate, setListDate] = useState();
   const [rowsDate, setRows] = useState([]);
   const [brushToolCheck, setBrushToolCheck] = useState("on");
 
-  const pullX1 = useCallback((x0,x1) => {
-    setDatex0(x0);
-    setDatex1(x1);
-  },[setDatex1,setDatex0]);
+  const pullX1 = useCallback(
+    (x0, x1) => {
+      setDatex0(x0);
+      setDatex1(x1);
+    },
+    [setDatex1, setDatex0]
+  );
 
-
-  const sendDate = useCallback((val) => {
-    if (val.length > 0) {
-      setBrushToolCheck("off");
-      // setListDate(val);
-      let listSelected = val.map((v) => rowsDate.filter((r) => r.id == v));
-      setListDate(listSelected);
-    } else {
-      setBrushToolCheck("on");
-    }
-  },[setListDate]);
+  const sendDate = useCallback(
+    (ids,rows) => {
+      if (ids.length > 0) {
+        setBrushToolCheck("off");
+        let listSelected = rows.filter((r) => ids.includes(r.id));   
+        setListDate(listSelected);
+      } else {
+        setBrushToolCheck("on");
+      }
+    },
+    [setListDate]
+  );
 
   return (
     <div id="container">
@@ -48,6 +51,7 @@ const MultiLinechartPage = (props) => {
         width={width}
         margin={margin}
         brushToolCheck={brushToolCheck}
+        listDate={listDate}
         pullX1={pullX1}
       ></MultiLinechart>
       <Grid container spacing={3}>

@@ -1,16 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo,useRef } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import * as d3 from "d3";
 import Linechart from "./chart/Linechart";
 import MultiLinechartPage from "./page/MultiLinechartPage";
 import Navbar from "./component/Navbar";
-import SimpleDataGrid from './component/SimpleDataGrid';
+import SimpleDataGrid from "./component/SimpleDataGrid";
 import ChangeLineColor from "./chart/ChangeLineColor";
 
 function App() {
   const [data, setData] = useState([]);
-  const [rawdata,setRawdata] = useState([]);
+  const [rawdata, setRawdata] = useState([]);
   const parseDate = d3.timeParse("%Y-%m");
+  const renders = useRef(0);
+
+  const csvData = () => {
+    d3.csv("data/data-extant.csv").then((d) => {
+      setRawdata(d);
+      const loaddata = d.columns.slice(1).map((sensor) => {
+        return {
+          col: sensor,
+          values: d.map((v) => {
+            return {
+              date: parseDate(v.Date),
+              vSensor: +v[sensor],
+            };
+          }),
+        };
+      });
+      setData(loaddata);
+    });
+  };
+  // const csvDataD3 = useMemo(()=> csvData(),[])
   // const parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S");
   useEffect(() => {
     d3.csv("data/data-extant.csv").then((d) => {
@@ -29,8 +49,10 @@ function App() {
       setData(loaddata);
     });
   }, []);
+  
   return (
     <div className="App">
+      {/* <div> App.js renders : {renders.current++}</div> */}
       <Router>
         <Navbar />
         <Switch>
@@ -54,7 +76,7 @@ function App() {
             ></MultiLinechartPage>
           </Route>
           <Route>
-            <ChangeLineColor/>
+            <ChangeLineColor />
           </Route>
           {/* <Route path="/simpledatagrid">
             <SimpleDataGrid
