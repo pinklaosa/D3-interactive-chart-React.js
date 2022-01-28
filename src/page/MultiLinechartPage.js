@@ -34,8 +34,11 @@ const MultiLinechartPage = (props) => {
     (ids,rows) => {
       if (ids.length > 0) {
         setBrushToolCheck("off");
+        setDatex0("");
+        setDatex1("");
         let listSelected = rows.filter((r) => ids.includes(r.id));   
         setListDate(listSelected);
+        
       } else {
         setBrushToolCheck("on");
       }

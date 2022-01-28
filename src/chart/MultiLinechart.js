@@ -3,7 +3,8 @@ import { useToggle } from "rooks";
 import * as d3 from "d3";
 
 const MultiLinechart = (props) => {
-  const { data, height, width, margin, brushToolCheck, listDate , pullX1 } = props;
+  const { data, height, width, margin, brushToolCheck, listDate, pullX1 } =
+    props;
 
   const renders = useRef(0);
 
@@ -30,23 +31,24 @@ const MultiLinechart = (props) => {
   const reformatDate = (datetime) =>
     datetime.getFullYear() + "-" + (datetime.getMonth() + 1);
 
+  
+
   useEffect(() => {
     drawChart();
-  }, [data,brushToolCheck,listDate]);
+  }, [data, brushToolCheck, listDate]);
 
   const drawChart = () => {
-
     // console.log("drawChart Func : " + brushToolCheck);
-    
-    // console.log(listDate);
+
     d3.select("svg").remove();
 
+    // console.log(listDate);
     const l = d3
       .select("#multilinechart")
       .append("svg")
       .attr("height", height)
       .attr("width", width);
-    
+
     const container = d3.select("#container");
     //color line
     const color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -101,8 +103,9 @@ const MultiLinechart = (props) => {
         .attr("stroke-width", "1.5px")
         .attr("d", (data) => line(data.values));
     };
-    mainLine();
-
+    if(brushToolCheck == "on"){
+      mainLine();
+    }
     //brush tool
     const brush = d3
       .brushX()
@@ -165,7 +168,7 @@ const MultiLinechart = (props) => {
         .attr("fill", "none")
         .attr("class", "line")
         .attr("id", (d) => "line-highlight-" + d.col)
-        .attr("stroke-width", "2px")
+        .attr("stroke-width", "3px")
         .attr("stroke", (d) => color(d))
         .attr("d", (data) =>
           line(
@@ -187,13 +190,19 @@ const MultiLinechart = (props) => {
         );
     };
 
-    //select highlight line
-    const selectedLine = (listDate) =>{
-      let sectionLine = listDate.length;
-      console.log(sectionLine);
-    }
+    //select highlight line Func
+    const selectedLine = (listDate) => {
+      let sectionLine = listDate.length + 2;
+      if (sectionLine == 3) {
+        const x0 = parseDate(listDate[sectionLine - 3].start);
+        const x1 = parseDate(listDate[sectionLine - 3].end);
+        brushLine(x0,x1)
+      }else if(sectionLine > 1){
 
-    if(brushToolCheck == "off"){
+      }
+    };
+
+    if (brushToolCheck == "off") {
       selectedLine(listDate);
     }
 
@@ -299,8 +308,11 @@ const MultiLinechart = (props) => {
       "padding",
       "20px " + `${margin.left}` + "px"
     );
+
+    
   };
 
+  
   // drawChart(data);
 
   return (
