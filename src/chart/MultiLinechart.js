@@ -31,8 +31,6 @@ const MultiLinechart = (props) => {
   const reformatDate = (datetime) =>
     datetime.getFullYear() + "-" + (datetime.getMonth() + 1);
 
-  
-
   useEffect(() => {
     drawChart();
   }, [data, brushToolCheck, listDate]);
@@ -103,7 +101,7 @@ const MultiLinechart = (props) => {
         .attr("stroke-width", "1.5px")
         .attr("d", (data) => line(data.values));
     };
-    if(brushToolCheck == "on"){
+    if (brushToolCheck == "on") {
       mainLine();
     }
     //brush tool
@@ -192,13 +190,41 @@ const MultiLinechart = (props) => {
 
     //select highlight line Func
     const selectedLine = (listDate) => {
-      let sectionLine = listDate.length + 2;
-      if (sectionLine == 3) {
-        const x0 = parseDate(listDate[sectionLine - 3].start);
-        const x1 = parseDate(listDate[sectionLine - 3].end);
-        brushLine(x0,x1)
-      }else if(sectionLine > 1){
+      let sectionLine = listDate.length * 2 + 1;
+      if (listDate.length == 1) {
+        const x0 = parseDate(listDate[0].start);
+        const x1 = parseDate(listDate[0].end);
+        brushLine(x0, x1);
+      } else if (sectionLine > 1) {
+        console.log("sectionLine : " + sectionLine);
+        let i = 0;
+        for (let index = 0; index < sectionLine; index++) {
+          if (index % 2 == 0 && index != 0) {
+            const x0 = parseDate(listDate[i].start);
+            const x1 = parseDate(listDate[i].end);
+            console.log(i + " : " + index);
+            const lineHighlight = lines
+              .append("path")
+              .attr("fill", "none")
+              .attr("class", "line")
+              .attr("id", (d) => "line-highlight-" + d.col)
+              .attr("stroke-width", "3px")
+              .attr("stroke", (d) => color(d))
+              .attr("d", (data) =>
+                line(
+                  data.values.filter(
+                    (d) =>
+                      d.date.getTime() >= x0.getTime() &&
+                      d.date.getTime() <= x1.getTime()
+                  )
+                )
+              );
+            i++;
+          }else if(index%2 == 1){
+            
+          }
 
+        }
       }
     };
 
@@ -308,11 +334,8 @@ const MultiLinechart = (props) => {
       "padding",
       "20px " + `${margin.left}` + "px"
     );
-
-    
   };
 
-  
   // drawChart(data);
 
   return (

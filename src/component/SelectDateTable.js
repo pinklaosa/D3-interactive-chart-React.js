@@ -42,9 +42,9 @@ const SelectDateTable = ({ rows, sendDate }) => {
           sendDate(ids,rows);
         }}
       />
-      <pre style={{ fontSize: 10 }}>
+      {/* <pre style={{ fontSize: 10 }}>
         {JSON.stringify(selectionModel, null, 4)}
-      </pre>
+      </pre> */}
     </div>
   );
 };
