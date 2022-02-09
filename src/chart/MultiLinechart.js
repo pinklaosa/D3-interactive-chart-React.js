@@ -188,45 +188,123 @@ const MultiLinechart = (props) => {
         );
     };
 
-    //select highlight line Func
+    const firstDate = reformatDate(
+      d3.min(data, (d) => d3.min(d.values, (v) => v.date))
+    );
+    const lastDate = reformatDate(
+      d3.max(data, (d) => d3.max(d.values, (v) => v.date))
+    );
+
     const selectedLine = (listDate) => {
+      const checkStartDate = listDate.some(d => d.start === firstDate);
       let sectionLine = listDate.length * 2 + 1;
-      if (listDate.length == 1) {
+      
+      if (sectionLine == 3) {
         const x0 = parseDate(listDate[0].start);
         const x1 = parseDate(listDate[0].end);
         brushLine(x0, x1);
-      } else if (sectionLine > 1) {
+      } else if (sectionLine > 3) {
         console.log("sectionLine : " + sectionLine);
         let i = 0;
-        for (let index = 0; index < sectionLine; index++) {
-          if (index % 2 == 0 && index != 0) {
-            const x0 = parseDate(listDate[i].start);
-            const x1 = parseDate(listDate[i].end);
-            console.log(i + " : " + index);
-            const lineHighlight = lines
-              .append("path")
-              .attr("fill", "none")
-              .attr("class", "line")
-              .attr("id", (d) => "line-highlight-" + d.col)
-              .attr("stroke-width", "3px")
-              .attr("stroke", (d) => color(d))
-              .attr("d", (data) =>
-                line(
-                  data.values.filter(
-                    (d) =>
-                      d.date.getTime() >= x0.getTime() &&
-                      d.date.getTime() <= x1.getTime()
-                  )
-                )
-              );
-            i++;
-          }else if(index%2 == 1){
-            
+        for (let index = 1; index <= sectionLine; index++) {
+          let lastLoop = sectionLine - 2;
+          if (index % 2 == 0) {
+            console.log("sectionLine " + index + ": Hightlight");
+          } else if (index % 2 == 1) {
+            console.log("sectionLine " + index + ": Not ");
+          } else if (index == lastLoop) {
+            console.log("sectionLine " + index + ": Not ");
           }
-
         }
       }
     };
+
+    //select highlight line Func
+    // const selectedLine = (listDate) => {
+    //   let sectionLine = listDate.length * 2 + 1;
+    //   if (listDate.length == 1) {
+    //     const x0 = parseDate(listDate[0].start);
+    //     const x1 = parseDate(listDate[0].end);
+    //     brushLine(x0, x1);
+    //   } else if (sectionLine > 1) {
+    //     console.log("sectionLine : " + sectionLine);
+    //     let lastLoop = sectionLine - 2;
+    //     let i = 0;
+    //     let j = 0;
+    //     for (let index = 0; index < sectionLine; index++) {
+    //       // console.log(index);
+    //       if (index % 2 == 0 && index != 0) {
+    //         const x0 = parseDate(listDate[i].start);
+    //         const x1 = parseDate(listDate[i].end);
+    //         // console.log(i + " : "+x1);
+    //         const lineHighlight = lines
+    //           .append("path")
+    //           .attr("fill", "none")
+    //           .attr("class", "line")
+    //           .attr("id", (d) => "line-highlight-" + d.col)
+    //           .attr("stroke-width", "3px")
+    //           .attr("stroke", (d) => color(d))
+    //           .attr("d", (data) =>
+    //             line(
+    //               data.values.filter(
+    //                 (d) =>
+    //                   d.date.getTime() >= x0.getTime() &&
+    //                   d.date.getTime() <= x1.getTime()
+    //               )
+    //             )
+    //           );
+    //         i++;
+    //       } else if (index % 2 == 1) {
+    //         const x0 = parseDate(listDate[j].start);
+    //         const x1 = parseDate(listDate[j].end);
+    //         if (index == 1) {
+    //           const lineNotHighlight = lines
+    //             .append("path")
+    //             .attr("fill", "none")
+    //             .attr("class", "line")
+    //             .attr("stroke", "rgba(0, 0, 0, 0.171)")
+    //             .attr("d", (data) =>
+    //               line(
+    //                 data.values.filter((d) => d.date.getTime() <= x0.getTime())
+    //               )
+    //             );
+    //         }
+    //         else if(index > 1 && index < lastLoop){
+    //           const x0Prev = parseDate(listDate[j+1].start);
+    //           // console.log(x0Prev);
+    //           const lineNotHighlight3 = lines
+    //           .append("path")
+    //           .attr("fill", "none")
+    //           .attr("class", "line")
+    //           .attr("stroke", "rgba(0, 0, 0, 0.171)")
+    //           .attr("d", (data) =>
+    //             line(
+    //               data.values.filter(
+    //                 (d) =>
+    //                   d.date.getTime() >= x1.getTime() &&
+    //                   d.date.getTime() <= x0Prev.getTime()
+    //               )
+    //             )
+    //           );
+    //         }
+    //         else if (index == lastLoop) {
+    //           const lineNotHighlight2 = lines
+    //             .append("path")
+    //             .attr("fill", "none")
+    //             .attr("class", "line")
+    //             .attr("stroke", "rgba(0, 0, 0, 0.171)")
+    //             .attr("d", (data) =>
+    //               line(
+    //                 data.values.filter((d) => d.date.getTime() >= x1.getTime())
+    //               )
+    //             );
+    //         }
+
+    //         j++;
+    //       }
+    //     }
+    //   }
+    // };
 
     if (brushToolCheck == "off") {
       selectedLine(listDate);

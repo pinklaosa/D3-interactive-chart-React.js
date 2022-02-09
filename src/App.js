@@ -6,6 +6,7 @@ import MultiLinechartPage from "./page/MultiLinechartPage";
 import Navbar from "./component/Navbar";
 import SimpleDataGrid from "./component/SimpleDataGrid";
 import ChangeLineColor from "./chart/ChangeLineColor";
+import SimpleScatter from "./chart/SimpleScatter";
 
 function App() {
   const [data, setData] = useState([]);
@@ -13,23 +14,7 @@ function App() {
   const parseDate = d3.timeParse("%Y-%m");
   const renders = useRef(0);
 
-  const csvData = () => {
-    d3.csv("data/data-extant.csv").then((d) => {
-      setRawdata(d);
-      const loaddata = d.columns.slice(1).map((sensor) => {
-        return {
-          col: sensor,
-          values: d.map((v) => {
-            return {
-              date: parseDate(v.Date),
-              vSensor: +v[sensor],
-            };
-          }),
-        };
-      });
-      setData(loaddata);
-    });
-  };
+  
   // const csvDataD3 = useMemo(()=> csvData(),[])
   // const parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S");
   useEffect(() => {
@@ -75,8 +60,8 @@ function App() {
               rawdata={rawdata}
             ></MultiLinechartPage>
           </Route>
-          <Route>
-            <ChangeLineColor />
+          <Route path="/simplescatter">
+            <SimpleScatter></SimpleScatter>
           </Route>
           {/* <Route path="/simpledatagrid">
             <SimpleDataGrid
