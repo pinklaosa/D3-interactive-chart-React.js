@@ -8,7 +8,8 @@ const Navbar = () =>{
             {/* <Link to="/simpleline">Simple LineChart</Link>| */}
             <Link to="/multiline">Multi LineChart</Link>|
             {/* <Link to="/linecolor">Change line color</Link>| */}
-            <Link to="/simplescatter">Simple Scatter plot</Link>|
+            {/* <Link to="/simplescatter">Simple Scatter plot</Link>| */}
+            <Link to="/scatter">Scatter plot</Link>
 
         </div>
     )

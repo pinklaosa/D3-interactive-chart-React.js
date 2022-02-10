@@ -1,26 +1,25 @@
 import React, { useEffect, useState, memo, useRef, useMemo } from "react";
 import * as d3 from "d3";
 
-const SimpleScatter = (props) => {
-  const { data, height, width, margin } = props;
+const Scatter = (props) => {
+  const { data, height,width, margin } = props;
 
   useEffect(() => {
     plotChart();
   }, [data]);
 
   const plotChart = () => {
-    d3.select("svg").remove();
     //setting up svg
     const buildSVG = d3
-      .select("#scatterplot")
+      .select("#scatterplot2")
       .append("svg")
       .attr("height", height)
-      .attr("width", width);
+      .attr("width", "auto");
 
     const svg = d3.select("svg");
-
     const color = d3.scaleOrdinal(d3.schemeCategory10);
     const columnsCsv = Object.keys(data[0]);
+
     //setting the scaling
     const x = d3
       .scaleLinear()
@@ -62,10 +61,7 @@ const SimpleScatter = (props) => {
       .attr("r", "3")
       .attr("fill", () => color());
   };
-  return (
-    <div>
-      <div id="scatterplot"></div>
-    </div>
-  );
+
+  return <div id="scatterplot2"></div>;
 };
-export default SimpleScatter;
+export default Scatter;
