@@ -7,9 +7,11 @@ import Navbar from "./component/Navbar";
 import SimpleDataGrid from "./component/SimpleDataGrid";
 import ChangeLineColor from "./chart/ChangeLineColor";
 import SimpleScatter from "./chart/SimpleScatter";
+import Grid from "@material-ui/core/Grid";
 
 function App() {
   const [data, setData] = useState([]);
+  const [dataS, setDataS] = useState([]);
   const [rawdata, setRawdata] = useState([]);
   const parseDate = d3.timeParse("%Y-%m");
   const renders = useRef(0);
@@ -33,6 +35,9 @@ function App() {
       });
       setData(loaddata);
     });
+    d3.csv("data/GSP2.csv").then((d)=>{
+      setDataS(d);
+    })
   }, []);
   
   return (
@@ -61,7 +66,12 @@ function App() {
             ></MultiLinechartPage>
           </Route>
           <Route path="/simplescatter">
-            <SimpleScatter></SimpleScatter>
+            <SimpleScatter
+            data={dataS}
+            width={1000}
+            height={700}
+            margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
+            ></SimpleScatter>
           </Route>
           {/* <Route path="/simpledatagrid">
             <SimpleDataGrid
