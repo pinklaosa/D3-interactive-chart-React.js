@@ -37,7 +37,6 @@ const MultiLinechart = (props) => {
 
   const drawChart = () => {
     // console.log("drawChart Func : " + brushToolCheck);
-
     d3.select("svg").remove();
 
     // console.log(listDate);
