@@ -4,11 +4,12 @@ import { scaleTime, select } from "d3";
 
 function Linechart(props) {
   const { data, width, height, margin, pullX01 } = props;
+  // console.log(data);
   useEffect(() => {
     drawChart();
   }, [data]);
 
-  const parseDate = d3.timeParse("%m/%d/%Y %H:%M");
+  const parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S+%H:%M");
 
   //Change formatdate to String
   const reformatDate = (datetime) =>
@@ -34,7 +35,7 @@ function Linechart(props) {
       .attr("width", width);
 
     const color = d3.scaleOrdinal(d3.schemeCategory10);
-    const curve = d3.curveLinear;
+    const curve = d3.curveMonotoneX;
     //setting up svg
     const svg = d3.select("#linechartSVG");
 
@@ -68,7 +69,7 @@ function Linechart(props) {
     const line = d3
       .line()
       .x((data) => x(data.date))
-      .y((data) => y(data.vSensor));
+      .y((data) => y(data.vSensor)).curve(curve);
 
     const lines = svg.selectAll("lines").data(data).enter().append("g");
 
@@ -96,15 +97,59 @@ function Linechart(props) {
       .on("start brush", brushing)
       .on("end", brushed);
 
-    function brushing({ selection }) {}
+    function brushing({ selection }) {
+      d3.selectAll(".line").remove();
+      const [x0, x1] = selection.map(x.invert);
+      brushLine(x0,x1)
+    }
     function brushed({ selection }) {
       if (selection == null) {
         pullX01("", "");
+        mainLine();
       } else {
         const [x0, x1] = selection.map(x.invert);
         pullX01(x0, x1);
       }
     }
+
+    //split line sections  from highlight
+    const brushLine = (x0, x1) => {
+      const line1 = lines
+        .append("path")
+        .attr("fill", "none")
+        .attr("class", "line")
+        .attr("stroke", "rgba(0, 0, 0, 0.171)")
+        .attr("d", (data) =>
+          line(data.values.filter((d) => d.date.getTime() <= x0.getTime()))
+        );
+
+      const line2 = lines
+        .append("path")
+        .attr("fill", "none")
+        .attr("class", "line")
+        .attr("id", (d) => "line-highlight-" + d.col)
+        .attr("stroke-width", "3px")
+        .attr("stroke", (d) => color(d))
+        .attr("d", (data) =>
+          line(
+            data.values.filter(
+              (d) =>
+                d.date.getTime() >= x0.getTime() &&
+                d.date.getTime() <= x1.getTime()
+            )
+          )
+        );
+
+      const line3 = lines
+        .append("path")
+        .attr("fill", "none")
+        .attr("class", "line")
+        .attr("stroke", "rgba(0, 0, 0, 0.171)")
+        .attr("d", (data) =>
+          line(data.values.filter((d) => d.date.getTime() >= x1.getTime()))
+        );
+    };
+
     svg.append("g").attr("class", "brush").call(brush);
   };
 

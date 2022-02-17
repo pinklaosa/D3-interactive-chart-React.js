@@ -6,6 +6,7 @@ const MultiLinechart = (props) => {
   const { data, height, width, margin, brushToolCheck, listDate, pullX1 } =
     props;
 
+    
   const renders = useRef(0);
 
   // console.log("Multiline Comp : " + brushToolCheck);

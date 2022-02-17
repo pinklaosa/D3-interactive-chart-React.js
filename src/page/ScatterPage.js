@@ -5,7 +5,7 @@ import Linechart from "../chart/Linechart";
 
 const ScatterPage = (props) => {
   const { data, height, width, margin, rawdata } = props;
-
+  // console.log(data);
   const [datex0, setDatex0] = useState("");
   const [datex1, setDatex1] = useState("");
   const gridContainer = {

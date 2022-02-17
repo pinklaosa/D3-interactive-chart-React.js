@@ -8,7 +8,7 @@ import SimpleDataGrid from "./component/SimpleDataGrid";
 import ChangeLineColor from "./chart/ChangeLineColor";
 import Grid from "@material-ui/core/Grid";
 import ScatterPage from "./page/ScatterPage";
-
+import SimpleScatter from "./chart/SimpleScatter";
 
 function App() {
   const [data, setData] = useState([]);
@@ -16,18 +16,18 @@ function App() {
   const [rawdata, setRawdata] = useState([]);
   const [rawdataS, setRawdataS] = useState([]);
   const parseDate = d3.timeParse("%Y-%m");
-  const parseDate2 = d3.timeParse("%m/%d/%Y %H:%M");
+  const parseDate2 = d3.timeParse("%Y-%m-%d %H:%M:%S+%H:%M");
   const renders = useRef(0);
   const gridContainer = {
     display: "grid",
     grid: "auto /auto auto",
     gridGap: "10px",
     contentAlign: "left",
-}
-const gridItems = {
-  padding: "0 50px",
-  textAlign: "start"
-}
+  };
+  const gridItems = {
+    padding: "0 50px",
+    textAlign: "start",
+  };
   // const csvDataD3 = useMemo(()=> csvData(),[])
   useEffect(() => {
     d3.csv("data/data-extant.csv").then((d) => {
@@ -45,9 +45,9 @@ const gridItems = {
       });
       setData(loaddata);
     });
-    d3.csv("data/GSP2.csv").then((d) => {
+    d3.csv("data/MasterTable/2022_26.csv").then((d) => {
       setRawdataS(d);
-      const loaddata = d.columns.slice(1).map((sensor) => {
+      const loaddata = d.columns.slice(5).map((sensor) => {
         return {
           col: sensor,
           values: d.map((v) => {
@@ -102,6 +102,14 @@ const gridItems = {
               rawdata={rawdata}
             ></SimpleDataGrid>
           </Route> */}
+          <Route path="/simplescatter">
+            <SimpleScatter
+              data={rawdataS}
+              height={600}
+              width={600}
+              margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
+            ></SimpleScatter>
+          </Route>
         </Switch>
       </Router>
     </div>
