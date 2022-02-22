@@ -5,7 +5,7 @@ const Scatter = (props) => {
   const { data, height, width, margin, x0, x1 } = props;
   const parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S+%H:%M");
   const [circlesHighlight, setCirclesHighlight] = useState([]);
-  
+
   useEffect(() => {
     plotChart();
   }, [data, x0, x1]);
@@ -102,30 +102,28 @@ const Scatter = (props) => {
       .on("end", brushed);
 
     function brushing({ selection }) {
-      const x0 = selection[0][0];
-      const x1 = selection[1][0];
-      const y0 = selection[0][1];
-      const y1 = selection[1][1];
-
-      svg.selectAll(".dataplot").style("fill", (d) => {
-        if (
-          x(d[columnsCsv[1]]) >= x0 &&
-          x(d[columnsCsv[1]]) <= x1 &&
-          y(d[columnsCsv[2]]) >= y0 &&
-          y(d[columnsCsv[2]]) <= y1
-        ) {
-          return color(1);
-        }
-      });
+      const [[x0, y0], [x1, y1]] = selection;
+      let values = [];
+      values = svg
+        .selectAll(".dataplot")
+        .attr("fill", "rgba(0, 0, 0, 0.171)")
+        .filter(
+          (d) =>
+            x0 <= x(d[columnsCsv[1]]) &&
+            x(d[columnsCsv[1]]) < x1 &&
+            y0 <= y(d[columnsCsv[2]]) &&
+            y(d[columnsCsv[2]]) < y1
+        )
+        .attr("fill", color())
+        .data();
+      console.log(values);
     }
 
     function brushed({ selection }) {
       if (selection == null) {
+        svg.selectAll(".dataplot").attr("fill", color());
       } else {
-        const x0 = selection[0][0];
-        const x1 = selection[1][0];
-        const y0 = selection[0][1];
-        const y1 = selection[1][1];
+        const [[x0, y0], [x1, y1]] = selection;
       }
     }
     svg.append("g").attr("class", "brushScatter").call(brush);
