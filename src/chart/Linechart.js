@@ -69,7 +69,8 @@ function Linechart(props) {
     const line = d3
       .line()
       .x((data) => x(data.date))
-      .y((data) => y(data.vSensor)).curve(curve);
+      .y((data) => y(data.vSensor))
+      .curve(curve);
 
     const lines = svg.selectAll("lines").data(data).enter().append("g");
 
@@ -81,9 +82,20 @@ function Linechart(props) {
         .transition()
         .duration(2000)
         .attr("id", (d) => d.col)
-        .attr("stroke", (d) => color(d))
+        .attr("stroke", color())
         .attr("stroke-width", "1.5px")
         .attr("d", (data) => line(data.values));
+
+      lines
+        .selectAll(".points")
+        .data((d) => d.values)
+        .enter()
+        .append("circle")
+        .attr("class", "points")
+        .attr("r", 3)
+        .attr("cx", (d) => x(d.date))
+        .attr("cy", (d) => y(d.vSensor))
+        .style("fill", color());
     };
     mainLine();
 
@@ -99,8 +111,26 @@ function Linechart(props) {
 
     function brushing({ selection }) {
       d3.selectAll(".line").remove();
+      d3.selectAll(".points").remove();
+
       const [x0, x1] = selection.map(x.invert);
-      brushLine(x0,x1)
+      brushLine(x0, x1);
+      lines
+        .selectAll(".points")
+        .data((d) =>
+          d.values.filter(
+            (v) =>
+              v.date.getTime() >= x0.getTime() &&
+              v.date.getTime() <= x1.getTime()
+          )
+        )
+        .enter()
+        .append("circle")
+        .attr("class", "points")
+        .attr("r", 3)
+        .attr("cx", (d) => x(d.date))
+        .attr("cy", (d) => y(d.vSensor))
+        .style("fill", color());
     }
     function brushed({ selection }) {
       if (selection == null) {
@@ -128,8 +158,8 @@ function Linechart(props) {
         .attr("fill", "none")
         .attr("class", "line")
         .attr("id", (d) => "line-highlight-" + d.col)
-        .attr("stroke-width", "3px")
-        .attr("stroke", (d) => color(d))
+        .attr("stroke-width", "1px")
+        .attr("stroke", color())
         .attr("d", (data) =>
           line(
             data.values.filter(

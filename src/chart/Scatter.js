@@ -4,7 +4,8 @@ import * as d3 from "d3";
 const Scatter = (props) => {
   const { data, height, width, margin, x0, x1 } = props;
   const parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S+%H:%M");
-  console.log(data);
+  const [circlesHighlight, setCirclesHighlight] = useState([]);
+  
   useEffect(() => {
     plotChart();
   }, [data, x0, x1]);
@@ -61,6 +62,7 @@ const Scatter = (props) => {
         .data(dataPoint)
         .enter()
         .append("circle")
+        .attr("class", "dataplot")
         .attr("cx", (d) => x(d[columnsCsv[1]]))
         .attr("cy", (d) => y(d[columnsCsv[2]]))
         .attr("r", r)
@@ -82,12 +84,51 @@ const Scatter = (props) => {
         };
       });
       const hightlightCircles = rawrows.filter((r) => r.CheckTime == true);
+      setCirclesHighlight(hightlightCircles);
       const noHightlightCircles = rawrows.filter((r) => r.CheckTime == false);
       scatterPoint(hightlightCircles, 3, 0.7, color());
       scatterPoint(noHightlightCircles, 1.5, 0.7, "rgba(0, 0, 0, 0.171)");
     } else if (x0 === "" || x1 === "") {
       scatterPoint(data, 3, 0.7, color());
     }
+
+    const brush = d3
+      .brush()
+      .extent([
+        [margin.left, margin.top],
+        [width, height - margin.bottom],
+      ])
+      .on("start brush", brushing)
+      .on("end", brushed);
+
+    function brushing({ selection }) {
+      const x0 = selection[0][0];
+      const x1 = selection[1][0];
+      const y0 = selection[0][1];
+      const y1 = selection[1][1];
+
+      svg.selectAll(".dataplot").style("fill", (d) => {
+        if (
+          x(d[columnsCsv[1]]) >= x0 &&
+          x(d[columnsCsv[1]]) <= x1 &&
+          y(d[columnsCsv[2]]) >= y0 &&
+          y(d[columnsCsv[2]]) <= y1
+        ) {
+          return color(1);
+        }
+      });
+    }
+
+    function brushed({ selection }) {
+      if (selection == null) {
+      } else {
+        const x0 = selection[0][0];
+        const x1 = selection[1][0];
+        const y0 = selection[0][1];
+        const y1 = selection[1][1];
+      }
+    }
+    svg.append("g").attr("class", "brushScatter").call(brush);
   };
 
   return <div id="scatterplot2"></div>;
