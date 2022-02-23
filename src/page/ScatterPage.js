@@ -8,6 +8,7 @@ const ScatterPage = (props) => {
   // console.log(data);
   const [datex0, setDatex0] = useState("");
   const [datex1, setDatex1] = useState("");
+  const [points,setPoints] = useState([]);
   const gridContainer = {
     display: "grid",
     grid: "auto /auto auto",
@@ -25,6 +26,10 @@ const ScatterPage = (props) => {
     [setDatex0, setDatex1]
   );
 
+  const pullXY = useCallback((datapoint) => {
+    setPoints(datapoint);
+  },[setPoints])
+
   return (
     <div style={gridContainer}>
       <div style={gridItems}>
@@ -35,6 +40,7 @@ const ScatterPage = (props) => {
           margin={margin}
           x0={datex0}
           x1={datex1}
+          pullXY={pullXY}
         ></Scatter>
       </div>
       <div style={gridItems}>
@@ -43,6 +49,7 @@ const ScatterPage = (props) => {
           height={600}
           width={800}
           margin={margin}
+          points={points}
           pullX01={pullX01}
         ></Linechart>
       </div>

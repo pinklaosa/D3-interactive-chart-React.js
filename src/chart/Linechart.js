@@ -3,11 +3,11 @@ import * as d3 from "d3";
 import { scaleTime, select } from "d3";
 
 function Linechart(props) {
-  const { data, width, height, margin, pullX01 } = props;
+  const { data, width, height, margin, pullX01, points } = props;
   // console.log(data);
   useEffect(() => {
     drawChart();
-  }, [data]);
+  }, [data, points]);
 
   const parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S+%H:%M");
 
@@ -73,6 +73,23 @@ function Linechart(props) {
       .curve(curve);
 
     const lines = svg.selectAll("lines").data(data).enter().append("g");
+
+    if (points && points.length > 0) {
+      const TimeStamp = points.map((p) => parseDate(p["TimeStamp"]).getTime());
+      
+      lines
+        .selectAll(".points")
+        .data((d) =>
+          d.values.filter((v) => TimeStamp.includes(v.date.getTime()))
+        )
+        .enter()
+        .append("circle")
+        .attr("class", "points")
+        .attr("r", 3)
+        .attr("cx", (d) => x(d.date))
+        .attr("cy", (d) => y(d.vSensor))
+        .style("fill", color());
+    }
 
     const mainLine = () => {
       lines

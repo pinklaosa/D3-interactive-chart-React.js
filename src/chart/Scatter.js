@@ -2,9 +2,11 @@ import React, { useEffect, useState, memo, useRef, useMemo } from "react";
 import * as d3 from "d3";
 
 const Scatter = (props) => {
-  const { data, height, width, margin, x0, x1 } = props;
+  const { data, height, width, margin, x0, x1,pullXY } = props;
   const parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S+%H:%M");
   const [circlesHighlight, setCirclesHighlight] = useState([]);
+
+
 
   useEffect(() => {
     plotChart();
@@ -84,7 +86,6 @@ const Scatter = (props) => {
         };
       });
       const hightlightCircles = rawrows.filter((r) => r.CheckTime == true);
-      setCirclesHighlight(hightlightCircles);
       const noHightlightCircles = rawrows.filter((r) => r.CheckTime == false);
       scatterPoint(hightlightCircles, 3, 0.7, color());
       scatterPoint(noHightlightCircles, 1.5, 0.7, "rgba(0, 0, 0, 0.171)");
@@ -116,7 +117,6 @@ const Scatter = (props) => {
         )
         .attr("fill", color())
         .data();
-      console.log(values);
     }
 
     function brushed({ selection }) {
@@ -124,6 +124,18 @@ const Scatter = (props) => {
         svg.selectAll(".dataplot").attr("fill", color());
       } else {
         const [[x0, y0], [x1, y1]] = selection;
+        let values = [];
+        values = svg
+          .selectAll(".dataplot")
+          .filter(
+            (d) =>
+              x0 <= x(d[columnsCsv[1]]) &&
+              x(d[columnsCsv[1]]) < x1 &&
+              y0 <= y(d[columnsCsv[2]]) &&
+              y(d[columnsCsv[2]]) < y1
+          )
+          .data();
+        pullXY(values);
       }
     }
     svg.append("g").attr("class", "brushScatter").call(brush);
