@@ -76,32 +76,29 @@ function Linechart(props) {
 
     if (points && points.length > 0) {
       const TimeStamp = points.map((p) => parseDate(p["TimeStamp"]).getTime());
-      
-      lines
-        .selectAll(".points")
-        .data((d) =>
-          d.values.filter((v) => TimeStamp.includes(v.date.getTime()))
-        )
-        .enter()
-        .append("circle")
-        .attr("class", "points")
-        .attr("r", 3)
-        .attr("cx", (d) => x(d.date))
-        .attr("cy", (d) => y(d.vSensor))
-        .style("fill", color());
+      const health = data.filter(d => d.col == "HEALTH");
+      const selectedData = health[0].values.map((d,i)=>{
+        return{
+          checkSelect : TimeStamp.includes(d.date.getTime()),
+          ...d,
+        }
+      })
+      const reData = selectedData.filter((s)=> s.checkSelect == true);
+      console.log(reData);
+      // const reData = data["values"].filter(v => TimeStamp.includes(v.date.getTime()));
     }
 
     const mainLine = () => {
-      lines
-        .append("path")
-        .attr("fill", "none")
-        .attr("class", "line")
-        .transition()
-        .duration(2000)
-        .attr("id", (d) => d.col)
-        .attr("stroke", color())
-        .attr("stroke-width", "1.5px")
-        .attr("d", (data) => line(data.values));
+      // lines
+      //   .append("path")
+      //   .attr("fill", "none")
+      //   .attr("class", "line")
+      //   .transition()
+      //   .duration(2000)
+      //   .attr("id", (d) => d.col)
+      //   .attr("stroke", color())
+      //   .attr("stroke-width", "1.5px")
+      //   .attr("d", (data) => line(data.values));
 
       lines
         .selectAll(".points")

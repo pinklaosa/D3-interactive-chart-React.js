@@ -6,8 +6,6 @@ const Scatter = (props) => {
   const parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S+%H:%M");
   const [circlesHighlight, setCirclesHighlight] = useState([]);
 
-
-
   useEffect(() => {
     plotChart();
   }, [data, x0, x1]);
@@ -122,6 +120,7 @@ const Scatter = (props) => {
     function brushed({ selection }) {
       if (selection == null) {
         svg.selectAll(".dataplot").attr("fill", color());
+        pullXY([]);
       } else {
         const [[x0, y0], [x1, y1]] = selection;
         let values = [];
@@ -135,6 +134,7 @@ const Scatter = (props) => {
               y(d[columnsCsv[2]]) < y1
           )
           .data();
+        console.log(values);
         pullXY(values);
       }
     }
