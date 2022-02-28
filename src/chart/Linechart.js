@@ -3,11 +3,11 @@ import * as d3 from "d3";
 import { scaleTime, select } from "d3";
 
 function Linechart(props) {
-  const { data, width, height, margin, pullX01, points } = props;
+  const { data, width, height, margin, pullX01, points, brushScatter } = props;
   // console.log(data);
   useEffect(() => {
     drawChart();
-  }, [data, points]);
+  }, [data, points, brushScatter]);
 
   const parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S+%H:%M");
 
@@ -74,31 +74,17 @@ function Linechart(props) {
 
     const lines = svg.selectAll("lines").data(data).enter().append("g");
 
-    if (points && points.length > 0) {
-      const TimeStamp = points.map((p) => parseDate(p["TimeStamp"]).getTime());
-      const health = data.filter(d => d.col == "HEALTH");
-      const selectedData = health[0].values.map((d,i)=>{
-        return{
-          checkSelect : TimeStamp.includes(d.date.getTime()),
-          ...d,
-        }
-      })
-      const reData = selectedData.filter((s)=> s.checkSelect == true);
-      console.log(reData);
-      // const reData = data["values"].filter(v => TimeStamp.includes(v.date.getTime()));
-    }
-
     const mainLine = () => {
-      // lines
-      //   .append("path")
-      //   .attr("fill", "none")
-      //   .attr("class", "line")
-      //   .transition()
-      //   .duration(2000)
-      //   .attr("id", (d) => d.col)
-      //   .attr("stroke", color())
-      //   .attr("stroke-width", "1.5px")
-      //   .attr("d", (data) => line(data.values));
+      lines
+        .append("path")
+        .attr("fill", "none")
+        .attr("class", "line")
+        .transition()
+        .duration(2000)
+        .attr("id", (d) => d.col)
+        .attr("stroke", color())
+        .attr("stroke-width", "1.5px")
+        .attr("d", (data) => line(data.values));
 
       lines
         .selectAll(".points")
@@ -111,7 +97,39 @@ function Linechart(props) {
         .attr("cy", (d) => y(d.vSensor))
         .style("fill", color());
     };
-    mainLine();
+
+    if (brushScatter == true) {
+      // const TimeStamp = points.map((p) => parseDate(p["TimeStamp"]).getTime());
+      // const health = data.filter(d => d.col == "HEALTH");
+      // const selectedData = health[0].values.map((d,i)=>{
+      //   return{
+      //     checkSelect : TimeStamp.includes(d.date.getTime()),
+      //     ...d,
+      //   }
+      // })
+      // const reData = selectedData.filter((s)=> s.checkSelect == true);
+      const reSimple = points.map(({ TimeStamp, HEALTH }) => {
+        return {
+          Date: parseDate(TimeStamp),
+          HEALTH,
+        };
+      });
+      console.log(reSimple);
+      svg.selectAll(".points").remove();
+      // const reData = data["values"].filter(v => TimeStamp.includes(v.date.getTime()));
+      lines
+        .selectAll(".points")
+        .data(reSimple)
+        .enter()
+        .append("circle")
+        .attr("class", "points")
+        .attr("r", 3)
+        .attr("cx", (d) => x(d.Date))
+        .attr("cy", (d) => y(d.HEALTH))
+        .style("fill", color());
+    } else if (brushScatter == false) {
+      mainLine();
+    }
 
     //brush tool
     const brush = d3

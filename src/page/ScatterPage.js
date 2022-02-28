@@ -2,13 +2,25 @@ import React, { useEffect, useState, memo, useRef, useCallback } from "react";
 import * as d3 from "d3";
 import Scatter from "../chart/Scatter";
 import Linechart from "../chart/Linechart";
+import ToggleButton from "@material-ui/lab/ToggleButton";
+import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
+import Crop54RoundedIcon from '@material-ui/icons/Crop54Rounded';
+import FilterNoneRoundedIcon from '@material-ui/icons/FilterNoneRounded';
+import GestureRoundedIcon from '@material-ui/icons/GestureRounded';
 
 const ScatterPage = (props) => {
   const { data, height, width, margin, rawdata } = props;
   // console.log(data);
   const [datex0, setDatex0] = useState("");
   const [datex1, setDatex1] = useState("");
-  const [points,setPoints] = useState([]);
+  const [points, setPoints] = useState([]);
+  const [brushScatter, setBrushScatter] = useState(false);
+  const [alignment, setAlignment] = React.useState("left");
+
+  const handleAlignment = (event, newAlignment) => {
+    setAlignment(newAlignment);
+  };
+
   const gridContainer = {
     display: "grid",
     grid: "auto /auto auto",
@@ -18,6 +30,13 @@ const ScatterPage = (props) => {
     padding: "0 5px",
   };
 
+  const brushTools = useCallback(
+    (c) => {
+      setBrushScatter(c);
+    },
+    [setBrushScatter]
+  );
+
   const pullX01 = useCallback(
     (x0, x1) => {
       setDatex0(x0);
@@ -26,34 +45,58 @@ const ScatterPage = (props) => {
     [setDatex0, setDatex1]
   );
 
-  const pullXY = useCallback((datapoint) => {
-    setPoints(datapoint);
-  },[setPoints])
+  const pullXY = useCallback(
+    (datapoint) => {
+      setPoints(datapoint);
+    },
+    [setPoints]
+  );
 
   return (
-    <div style={gridContainer}>
-      <div style={gridItems}>
-        <Scatter
-          data={rawdata}
-          width={width}
-          height={height}
-          margin={margin}
-          x0={datex0}
-          x1={datex1}
-          pullXY={pullXY}
-        ></Scatter>
+    <>
+      <br></br>
+      <ToggleButtonGroup
+        value={alignment}
+        exclusive
+        onChange={handleAlignment}
+        aria-label="text alignment"
+      >
+        <ToggleButton value="left" aria-label="left aligned">
+          <Crop54RoundedIcon />
+        </ToggleButton>
+        <ToggleButton value="center" aria-label="centered">
+          <FilterNoneRoundedIcon />
+        </ToggleButton>
+        <ToggleButton value="right" aria-label="right aligned">
+          <GestureRoundedIcon />
+        </ToggleButton>
+      </ToggleButtonGroup>
+      <div style={gridContainer}>
+        <div style={gridItems}>
+          <Scatter
+            data={rawdata}
+            width={width}
+            height={height}
+            margin={margin}
+            x0={datex0}
+            x1={datex1}
+            pullXY={pullXY}
+            brushTools={brushTools}
+          ></Scatter>
+        </div>
+        <div style={gridItems}>
+          <Linechart
+            data={data}
+            height={600}
+            width={800}
+            margin={margin}
+            points={points}
+            brushScatter={brushScatter}
+            pullX01={pullX01}
+          ></Linechart>
+        </div>
       </div>
-      <div style={gridItems}>
-        <Linechart
-          data={data}
-          height={600}
-          width={800}
-          margin={margin}
-          points={points}
-          pullX01={pullX01}
-        ></Linechart>
-      </div>
-    </div>
+    </>
   );
 };
 export default ScatterPage;
