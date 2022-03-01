@@ -2,14 +2,13 @@ import React, { useEffect, useState, memo, useRef, useMemo } from "react";
 import * as d3 from "d3";
 
 const Scatter = (props) => {
-  const { data, height, width, margin, x0, x1,pullXY,brushTools } = props;
+  const { data, height, width, margin, x0, x1,pullXY,brushTools,tools } = props;
   const parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S+%H:%M");
   const [circlesHighlight, setCirclesHighlight] = useState([]);
-  const [brushScatter,setBrushScatter] = useState(false);
 
   useEffect(() => {
     plotChart();
-  }, [data, x0, x1]);
+  }, [data, x0, x1,tools]);
 
   const plotChart = () => {
     //  console.log("Date : " + x0 + " - " + x1);
@@ -125,8 +124,6 @@ const Scatter = (props) => {
         .attr("fill", color())
         .data();
       brushTools(true);
-     
-
     }
 
     function brushed({ selection }) {
@@ -150,7 +147,14 @@ const Scatter = (props) => {
         pullXY(values);
       }
     }
-    svg.append("g").attr("class", "brushScatter").call(brush);
+
+    if(tools == "brush"){
+      svg.append("g").attr("class", "brushScatter").call(brush);
+    }else if(tools == ""){
+      svg.selectAll(".brushScatter").remove();
+      scatterPoint(data, 3, 0.7, color());
+    }
+    
   };
 
   return <div id="scatterplot2"></div>;

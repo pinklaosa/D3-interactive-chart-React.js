@@ -3,11 +3,11 @@ import * as d3 from "d3";
 import { scaleTime, select } from "d3";
 
 function Linechart(props) {
-  const { data, width, height, margin, pullX01, points, brushScatter } = props;
+  const { data, width, height, margin, pullX01, points, brushScatter,tools } = props;
   // console.log(data);
   useEffect(() => {
     drawChart();
-  }, [data, points, brushScatter]);
+  }, [data, points, brushScatter,tools]);
 
   const parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S+%H:%M");
 
@@ -212,7 +212,14 @@ function Linechart(props) {
         );
     };
 
-    svg.append("g").attr("class", "brush").call(brush);
+    if(tools == "brush"){
+      svg.append("g").attr("class", "brush").call(brush);
+    }else if(tools == ""){
+      console.log(tools);
+      svg.selectAll(".brush").remove();
+      mainLine();
+    }
+    
   };
 
   return <div id="linechart"></div>;

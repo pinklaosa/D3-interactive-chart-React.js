@@ -15,10 +15,10 @@ const ScatterPage = (props) => {
   const [datex1, setDatex1] = useState("");
   const [points, setPoints] = useState([]);
   const [brushScatter, setBrushScatter] = useState(false);
-  const [alignment, setAlignment] = React.useState("left");
+  const [tools, setTools] = React.useState("");
 
-  const handleAlignment = (event, newAlignment) => {
-    setAlignment(newAlignment);
+  const handleTools = (event, newTools) => {
+    setTools(newTools);
   };
 
   const gridContainer = {
@@ -56,18 +56,17 @@ const ScatterPage = (props) => {
     <>
       <br></br>
       <ToggleButtonGroup
-        value={alignment}
+        value={tools}
         exclusive
-        onChange={handleAlignment}
-        aria-label="text alignment"
+        onChange={handleTools}
       >
-        <ToggleButton value="left" aria-label="left aligned">
+        <ToggleButton value="brush">
           <Crop54RoundedIcon />
         </ToggleButton>
-        <ToggleButton value="center" aria-label="centered">
+        <ToggleButton value="multiBrush">
           <FilterNoneRoundedIcon />
         </ToggleButton>
-        <ToggleButton value="right" aria-label="right aligned">
+        <ToggleButton value="lessoBrush">
           <GestureRoundedIcon />
         </ToggleButton>
       </ToggleButtonGroup>
@@ -80,6 +79,7 @@ const ScatterPage = (props) => {
             margin={margin}
             x0={datex0}
             x1={datex1}
+            tools={tools}
             pullXY={pullXY}
             brushTools={brushTools}
           ></Scatter>
@@ -92,6 +92,7 @@ const ScatterPage = (props) => {
             margin={margin}
             points={points}
             brushScatter={brushScatter}
+            tools={tools}
             pullX01={pullX01}
           ></Linechart>
         </div>
