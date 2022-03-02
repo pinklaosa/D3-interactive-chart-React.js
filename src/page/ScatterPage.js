@@ -15,7 +15,8 @@ const ScatterPage = (props) => {
   const [datex1, setDatex1] = useState("");
   const [points, setPoints] = useState([]);
   const [brushScatter, setBrushScatter] = useState(false);
-  const [tools, setTools] = React.useState("");
+  const [tools, setTools] = useState("");
+  const [selectedData, setSelectedData ] = useState([]);
 
   const handleTools = (event, newTools) => {
     setTools(newTools);

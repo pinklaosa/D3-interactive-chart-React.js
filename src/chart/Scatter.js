@@ -149,8 +149,10 @@ const Scatter = (props) => {
     }
 
     if(tools == "brush"){
+      console.log("Scatter "+ tools);
       svg.append("g").attr("class", "brushScatter").call(brush);
     }else if(tools == ""){
+      console.log("Scatter "+tools);
       svg.selectAll(".brushScatter").remove();
       scatterPoint(data, 3, 0.7, color());
     }

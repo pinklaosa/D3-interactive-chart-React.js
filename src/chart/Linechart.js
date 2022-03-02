@@ -213,6 +213,7 @@ function Linechart(props) {
     };
 
     if(tools == "brush"){
+      console.log(tools);
       svg.append("g").attr("class", "brush").call(brush);
     }else if(tools == ""){
       console.log(tools);
