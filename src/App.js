@@ -47,15 +47,10 @@ function App() {
     });
     d3.csv("data/MasterTable/2022_26.csv").then((d) => {
       setRawdataS(d);
-      const loaddata = d.columns.slice(5).map((sensor) => {
+      const loaddata = d.map(({ TimeStamp, HEALTH }) => {
         return {
-          col: sensor,
-          values: d.map((v) => {
-            return {
-              date: parseDate2(v.TimeStamp),
-              vSensor: +v[sensor],
-            };
-          }),
+          date: parseDate2(TimeStamp) ,
+          health: +HEALTH,
         };
       });
       setDataS(loaddata);

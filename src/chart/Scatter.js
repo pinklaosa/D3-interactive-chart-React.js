@@ -2,17 +2,29 @@ import React, { useEffect, useState, memo, useRef, useMemo } from "react";
 import * as d3 from "d3";
 
 const Scatter = (props) => {
-  const { data, height, width, margin, x0, x1,pullXY,brushTools,tools } = props;
+  const {
+    data,
+    height,
+    width,
+    margin,
+    x0,
+    x1,
+    pullXY,
+    brushTools,
+    tools,
+    selectedData,
+  } = props;
   const parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S+%H:%M");
   const [circlesHighlight, setCirclesHighlight] = useState([]);
 
   useEffect(() => {
     plotChart();
-  }, [data, x0, x1,tools]);
+  }, [data, x0, x1, tools,selectedData]);
 
   const plotChart = () => {
     //  console.log("Date : " + x0 + " - " + x1);
     d3.select("#scatterplotSVG").remove();
+    console.log(selectedData);
     //setting up svg
     const buildSVG = d3
       .select("#scatterplot2")
@@ -71,23 +83,32 @@ const Scatter = (props) => {
     };
 
     //plot circles
-    if (x0 != "" && x1 != "") {
-      const rawrows = data.map((d) => {
-        const timestamp = parseDate(d[columnsCsv[0]]);
-        return {
-          ...d,
-          CheckTime:
-            x0 !== "" && x1 !== ""
-              ? timestamp.getTime() >= x0.getTime() &&
-                timestamp.getTime() <= x1.getTime()
-              : false,
-        };
-      });
-      const hightlightCircles = rawrows.filter((r) => r.CheckTime == true);
-      const noHightlightCircles = rawrows.filter((r) => r.CheckTime == false);
-      scatterPoint(hightlightCircles, 3, 0.7, color());
-      scatterPoint(noHightlightCircles, 1.5, 0.7, "rgba(0, 0, 0, 0.171)");
-    } else if (x0 === "" || x1 === "") {
+    // if (x0 != "" && x1 != "") {
+    //   const rawrows = data.map((d) => {
+    //     const timestamp = parseDate(d[columnsCsv[0]]);
+    //     return {
+    //       ...d,
+    //       CheckTime:
+    //         x0 !== "" && x1 !== ""
+    //           ? timestamp.getTime() >= x0.getTime() &&
+    //             timestamp.getTime() <= x1.getTime()
+    //           : false,
+    //     };
+    //   });
+    //   const hightlightCircles = rawrows.filter((r) => r.CheckTime == true);
+    //   const noHightlightCircles = rawrows.filter((r) => r.CheckTime == false);
+    //   scatterPoint(hightlightCircles, 3, 0.7, color());
+    //   scatterPoint(noHightlightCircles, 1.5, 0.7, "rgba(0, 0, 0, 0.171)");
+    // } else if (x0 === "" || x1 === "") {
+    //   scatterPoint(data, 3, 0.7, color());
+    // }
+
+    if(selectedData.length > 0){
+      const selectPoints = selectedData.map((element,index) => data[element]);
+      console.log(selectPoints);
+      d3.selectAll(".dataplot").remove();
+      scatterPoint(selectPoints, 3, 0.7, color());
+    }else{
       scatterPoint(data, 3, 0.7, color());
     }
 
@@ -97,13 +118,13 @@ const Scatter = (props) => {
         [margin.left, margin.top],
         [width, height - margin.bottom],
       ])
-      .on("start",startBrush)
+      .on("start", startBrush)
       .on("brush", brushing)
       .on("end", brushed);
 
     function startBrush() {
       svg.selectAll(".dataplot").remove();
-       scatterPoint(data, 3, 0.7, color());
+      scatterPoint(data, 3, 0.7, color());
     }
 
     function brushing({ selection }) {
@@ -134,29 +155,35 @@ const Scatter = (props) => {
       } else {
         const [[x0, y0], [x1, y1]] = selection;
         let values = [];
+        let indexValues = [];
         values = svg
           .selectAll(".dataplot")
           .filter(
-            (d) =>
-              x0 <= x(d[columnsCsv[1]]) &&
-              x(d[columnsCsv[1]]) < x1 &&
-              y0 <= y(d[columnsCsv[2]]) &&
-              y(d[columnsCsv[2]]) < y1
+            (element,index) =>{
+              if(x0 <= x(element[columnsCsv[1]]) &&
+              x(element[columnsCsv[1]]) < x1 &&
+              y0 <= y(element[columnsCsv[2]]) &&
+              y(element[columnsCsv[2]]) < y1){
+                indexValues.push(index);
+                return true;
+              }
+            }
           )
           .data();
-        pullXY(values);
+        pullXY(values,indexValues);
       }
     }
 
-    if(tools == "brush"){
-      console.log("Scatter "+ tools);
-      svg.append("g").attr("class", "brushScatter").call(brush);
-    }else if(tools == ""){
-      console.log("Scatter "+tools);
-      svg.selectAll(".brushScatter").remove();
-      scatterPoint(data, 3, 0.7, color());
-    }
-    
+    // if (tools == "brush") {
+    //   // console.log("Scatter "+ tools);
+    //   scatterPoint(data, 3, 0.7, color());
+    //   svg.append("g").attr("class", "brushScatter").call(brush);
+    // } else if (tools == "") {
+    //   // console.log("Scatter "+tools);
+    //   svg.selectAll(".brushScatter").remove();
+    //   scatterPoint(data, 3, 0.7, color());
+    // }
+    svg.append("g").attr("class", "brushScatter").call(brush);
   };
 
   return <div id="scatterplot2"></div>;
