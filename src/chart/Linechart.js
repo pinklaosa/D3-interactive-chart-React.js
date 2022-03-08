@@ -53,15 +53,12 @@ function Linechart(props) {
     //setting the scaling
     const x = d3
       .scaleTime()
-      .domain(d3.extent(data,(d) => d.date))
+      .domain(d3.extent(data, (d) => d.date))
       .range([margin.left, width]);
 
     const y = d3
       .scaleLinear()
-      .domain([
-        d3.min(data, (d) => d.health),
-        d3.max(data, (d) => d.health),
-      ])
+      .domain([d3.min(data, (d) => d.health), d3.max(data, (d) => d.health)])
       .range([height - margin.bottom, margin.top]);
 
     //setting up the axes
@@ -95,40 +92,57 @@ function Linechart(props) {
         .attr("stroke-width", "1.5px")
         .attr("d", line);
 
-      // lines
-      //   .selectAll(".points")
-      //   .data(data)
-      //   .enter()
-      //   .append("circle")
-      //   .attr("class", "points")
-      //   .attr("r", 3)
-      //   .attr("cx", (d) => x(d.date))
-      //   .attr("cy", (d) => y(d.health))
-      //   .style("fill", color());
+      lines
+        .selectAll(".points")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("class", "points")
+        .attr("r", 3)
+        .attr("cx", (d) => x(d.date))
+        .attr("cy", (d) => y(d.health))
+        .style("fill", color());
     };
- 
-    if (brushScatter == true) {
-      // const reSimple = points.map(({ TimeStamp, HEALTH }) => {
-      //   return {
-      //     Date: parseDate(TimeStamp),
-      //     HEALTH,
-      //   };
-      // });
-      // // console.log(reSimple);
-      // svg.selectAll(".points").remove();
-      // lines
-      //   .selectAll(".points")
-      //   .data(reSimple)
-      //   .enter()
-      //   .append("circle")
-      //   .attr("class", "points")
-      //   .attr("r", 3)
-      //   .attr("cx", (d) => x(d.Date))
-      //   .attr("cy", (d) => y(d.HEALTH))
-      //   .style("fill", color());
-    } else if (brushScatter == false) {
+
+    if (selectedData.length > 0) {
+      const selectPoints = selectedData.map((element,index) => data[element]);
+      d3.selectAll(".points").remove();
+      lines
+        .selectAll(".points")
+        .data(selectPoints)
+        .enter()
+        .append("circle")
+        .attr("class", "points")
+        .attr("r", 3)
+        .attr("cx", (d) => x(d.date))
+        .attr("cy", (d) => y(d.health))
+        .style("fill", color());
+    } else if (selectedData.length <= 0) {
       mainLine();
     }
+
+    // if (brushScatter == true) {
+    //   // const reSimple = points.map(({ TimeStamp, HEALTH }) => {
+    //   //   return {
+    //   //     Date: parseDate(TimeStamp),
+    //   //     HEALTH,
+    //   //   };
+    //   // });
+    //   // // console.log(reSimple);
+    //   // svg.selectAll(".points").remove();
+    //   // lines
+    //   //   .selectAll(".points")
+    //   //   .data(reSimple)
+    //   //   .enter()
+    //   //   .append("circle")
+    //   //   .attr("class", "points")
+    //   //   .attr("r", 3)
+    //   //   .attr("cx", (d) => x(d.Date))
+    //   //   .attr("cy", (d) => y(d.HEALTH))
+    //   //   .style("fill", color());
+    // } else if (brushScatter == false) {
+    //   mainLine();
+    // }
 
     //brush tool
     const brush = d3
@@ -143,13 +157,12 @@ function Linechart(props) {
     function brushing({ selection }) {
       d3.selectAll(".line").remove();
       d3.selectAll(".points").remove();
-
       const [x0, x1] = selection.map(x.invert);
-      brushLine(x0, x1);
+      // brushLine(x0, x1);
       lines
         .selectAll(".points")
         .data((d) =>
-          d.values.filter(
+          d.filter(
             (v) =>
               v.date.getTime() >= x0.getTime() &&
               v.date.getTime() <= x1.getTime()
@@ -160,9 +173,10 @@ function Linechart(props) {
         .attr("class", "points")
         .attr("r", 3)
         .attr("cx", (d) => x(d.date))
-        .attr("cy", (d) => y(d.vSensor))
+        .attr("cy", (d) => y(d.health))
         .style("fill", color());
     }
+
     function brushed({ selection }) {
       if (selection == null) {
         pullX01("", "");
@@ -181,7 +195,7 @@ function Linechart(props) {
         .attr("class", "line")
         .attr("stroke", "rgba(0, 0, 0, 0.171)")
         .attr("d", (data) =>
-          line(data.values.filter((d) => d.date.getTime() <= x0.getTime()))
+          line(data.filter((d) => d.date.getTime() <= x0.getTime()))
         );
 
       const line2 = lines
@@ -193,7 +207,7 @@ function Linechart(props) {
         .attr("stroke", color())
         .attr("d", (data) =>
           line(
-            data.values.filter(
+            data.filter(
               (d) =>
                 d.date.getTime() >= x0.getTime() &&
                 d.date.getTime() <= x1.getTime()
@@ -207,7 +221,7 @@ function Linechart(props) {
         .attr("class", "line")
         .attr("stroke", "rgba(0, 0, 0, 0.171)")
         .attr("d", (data) =>
-          line(data.values.filter((d) => d.date.getTime() >= x1.getTime()))
+          line(data.filter((d) => d.date.getTime() >= x1.getTime()))
         );
     };
 
@@ -219,6 +233,7 @@ function Linechart(props) {
     //   svg.selectAll(".brush").remove();
     //   mainLine();
     // }
+    svg.append("g").attr("class", "brush").call(brush);
   };
 
   return <div id="linechart"></div>;

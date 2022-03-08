@@ -105,7 +105,6 @@ const Scatter = (props) => {
 
     if(selectedData.length > 0){
       const selectPoints = selectedData.map((element,index) => data[element]);
-      console.log(selectPoints);
       d3.selectAll(".dataplot").remove();
       scatterPoint(selectPoints, 3, 0.7, color());
     }else{
