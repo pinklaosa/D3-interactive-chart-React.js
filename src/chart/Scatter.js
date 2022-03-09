@@ -19,7 +19,7 @@ const Scatter = (props) => {
 
   useEffect(() => {
     plotChart();
-  }, [data, x0, x1, tools,selectedData]);
+  }, [data, x0, x1, tools, selectedData]);
 
   const plotChart = () => {
     //  console.log("Date : " + x0 + " - " + x1);
@@ -103,11 +103,15 @@ const Scatter = (props) => {
     //   scatterPoint(data, 3, 0.7, color());
     // }
 
-    if(selectedData.length > 0){
-      const selectPoints = selectedData.map((element,index) => data[element]);
+    if (selectedData.length > 0) {
+      const selectPoints = selectedData.map((element, index) => data[element]);
+      const notSelectedPoints = data.filter(
+        (element, index) => !selectedData.includes(index)
+      );
       d3.selectAll(".dataplot").remove();
       scatterPoint(selectPoints, 3, 0.7, color());
-    }else{
+      scatterPoint(notSelectedPoints, 3, 0.7, "rgba(0, 0, 0, 0.171)");
+    } else {
       scatterPoint(data, 3, 0.7, color());
     }
 
@@ -157,19 +161,19 @@ const Scatter = (props) => {
         let indexValues = [];
         values = svg
           .selectAll(".dataplot")
-          .filter(
-            (element,index) =>{
-              if(x0 <= x(element[columnsCsv[1]]) &&
+          .filter((element, index) => {
+            if (
+              x0 <= x(element[columnsCsv[1]]) &&
               x(element[columnsCsv[1]]) < x1 &&
               y0 <= y(element[columnsCsv[2]]) &&
-              y(element[columnsCsv[2]]) < y1){
-                indexValues.push(index);
-                return true;
-              }
+              y(element[columnsCsv[2]]) < y1
+            ) {
+              indexValues.push(index);
+              return true;
             }
-          )
+          })
           .data();
-        pullXY(values,indexValues);
+        pullXY(values, indexValues);
       }
     }
 

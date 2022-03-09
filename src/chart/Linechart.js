@@ -106,7 +106,11 @@ function Linechart(props) {
 
     if (selectedData.length > 0) {
       const selectPoints = selectedData.map((element,index) => data[element]);
+      const notSelectedPoints = data.filter(
+        (element, index) => !selectedData.includes(index)
+      );
       d3.selectAll(".points").remove();
+      
       lines
         .selectAll(".points")
         .data(selectPoints)
@@ -117,6 +121,7 @@ function Linechart(props) {
         .attr("cx", (d) => x(d.date))
         .attr("cy", (d) => y(d.health))
         .style("fill", color());
+
     } else if (selectedData.length <= 0) {
       mainLine();
     }
