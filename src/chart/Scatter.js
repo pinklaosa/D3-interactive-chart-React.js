@@ -24,7 +24,7 @@ const Scatter = (props) => {
   const plotChart = () => {
     //  console.log("Date : " + x0 + " - " + x1);
     d3.select("#scatterplotSVG").remove();
-    console.log(selectedData);
+    // console.log(selectedData);
     //setting up svg
     const buildSVG = d3
       .select("#scatterplot2")
@@ -108,7 +108,6 @@ const Scatter = (props) => {
       const notSelectedPoints = data.filter(
         (element, index) => !selectedData.includes(index)
       );
-      d3.selectAll(".dataplot").remove();
       scatterPoint(selectPoints, 3, 0.7, color());
       scatterPoint(notSelectedPoints, 3, 0.7, "rgba(0, 0, 0, 0.171)");
     } else {

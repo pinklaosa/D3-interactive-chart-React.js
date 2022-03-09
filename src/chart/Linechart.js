@@ -91,7 +91,6 @@ function Linechart(props) {
         .attr("stroke", color())
         .attr("stroke-width", "1.5px")
         .attr("d", line);
-
       lines
         .selectAll(".points")
         .data(data)
@@ -110,8 +109,15 @@ function Linechart(props) {
         (element, index) => !selectedData.includes(index)
       );
       d3.selectAll(".points").remove();
-      
       lines
+        .append("path")
+        .attr("fill", "none")
+        .attr("class", "line")
+        .attr("id", "health")
+        .attr("stroke", color())
+        .attr("stroke-width", "1.5px")
+        .attr("d", line);
+      svg
         .selectAll(".points")
         .data(selectPoints)
         .enter()
@@ -163,7 +169,7 @@ function Linechart(props) {
       d3.selectAll(".line").remove();
       d3.selectAll(".points").remove();
       const [x0, x1] = selection.map(x.invert);
-      // brushLine(x0, x1);
+      brushLine(x0, x1);
       lines
         .selectAll(".points")
         .data((d) =>
