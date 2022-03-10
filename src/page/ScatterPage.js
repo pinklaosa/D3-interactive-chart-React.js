@@ -7,6 +7,7 @@ import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import Crop54RoundedIcon from "@material-ui/icons/Crop54Rounded";
 import FilterNoneRoundedIcon from "@material-ui/icons/FilterNoneRounded";
 import GestureRoundedIcon from "@material-ui/icons/GestureRounded";
+import Button from "@material-ui/core/Button";
 
 const ScatterPage = (props) => {
   const { data, height, width, margin, rawdata } = props;
@@ -89,13 +90,19 @@ const ScatterPage = (props) => {
         <ToggleButton value="brush">
           <Crop54RoundedIcon />
         </ToggleButton>
-        <ToggleButton value="multiBrush">
-          <FilterNoneRoundedIcon />
-        </ToggleButton>
         <ToggleButton value="lessoBrush">
           <GestureRoundedIcon />
         </ToggleButton>
       </ToggleButtonGroup>
+      <Button
+        href="#"
+        color="primary"
+        onClick={() => {
+          setSelectedData([]);
+        }}
+      >
+        RESET
+      </Button>
       <div style={gridContainer}>
         <div style={gridItems}>
           <Scatter

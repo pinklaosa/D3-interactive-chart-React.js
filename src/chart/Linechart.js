@@ -114,7 +114,7 @@ function Linechart(props) {
         .attr("fill", "none")
         .attr("class", "line")
         .attr("id", "health")
-        .attr("stroke", color())
+        .attr("stroke", "rgba(0, 0, 0, 0.171)")
         .attr("stroke-width", "1.5px")
         .attr("d", line);
       svg
