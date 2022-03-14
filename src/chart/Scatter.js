@@ -1,6 +1,7 @@
 import React, { useEffect, useState, memo, useRef, useMemo } from "react";
 import * as d3 from "d3";
 
+
 const Scatter = (props) => {
   const {
     data,
@@ -108,8 +109,25 @@ const Scatter = (props) => {
       const notSelectedPoints = data.filter(
         (element, index) => !selectedData.includes(index)
       );
+      console.log(data);
+      console.log(selectPoints);
+      console.log(notSelectedPoints);
+      console.log("------------------------------------------------");
+      d3.selectAll(".dataplot").remove();
+      // const circles = svg
+      //   .selectAll("circle")
+      //   .data(selectPoints)
+      //   .enter()
+      //   .append("circle")
+      //   .attr("class", "dataplot")
+      //   .attr("id", "selected")
+      //   .attr("cx", (d) => x(d[columnsCsv[1]]))
+      //   .attr("cy", (d) => y(d[columnsCsv[2]]))
+      //   .attr("r", 3)
+      //   .attr("fill-opacity", 0.7)
+      //   .attr("fill", color());
       scatterPoint(selectPoints, 3, 0.7, color());
-      scatterPoint(notSelectedPoints, 3, 0.7, "rgba(0, 0, 0, 0.171)");
+      scatterPoint(notSelectedPoints, 3, 0.5, "rgba(0, 0, 0, 0.171)");
     } else {
       scatterPoint(data, 3, 0.7, color());
     }
@@ -176,6 +194,21 @@ const Scatter = (props) => {
       }
     }
 
+    const lasso_start = () => {
+      lasso.items().attr("r", 3).attr("fill", color());
+    };
+    const lasso_draw = () => {
+      lasso.possibleItems().style("fill", color());
+
+      lasso.notPossibleItems().attr("fill", "rgba(0, 0, 0, 0.171)");
+    };
+
+    const lasso_end = () => {
+      lasso.selectedItems().attr("fill",color());
+      lasso.notSelectedItems().attr("fill","rgba(0, 0, 0, 0.171)");
+    };
+
+    const lassoCall = d3.lasso()
     // if (tools == "brush") {
     //   // console.log("Scatter "+ tools);
     //   scatterPoint(data, 3, 0.7, color());
@@ -185,7 +218,7 @@ const Scatter = (props) => {
     //   svg.selectAll(".brushScatter").remove();
     //   scatterPoint(data, 3, 0.7, color());
     // }
-    svg.append("g").attr("class", "brushScatter").call(brush);
+    // svg.append("g").attr("class", "brushScatter").call(brush);
   };
 
   return <div id="scatterplot2"></div>;
