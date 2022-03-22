@@ -38,7 +38,6 @@ const MultiLinechartPage = (props) => {
         setDatex1("");
         let listSelected = rows.filter((r) => ids.includes(r.id));   
         setListDate(listSelected);
-        
       } else {
         setBrushToolCheck("on");
       }
@@ -92,6 +91,7 @@ const MultiLinechartPage = (props) => {
               rawdata={rawdata}
               x0={datex0}
               x1={datex1}
+              listDate={listDate}
             ></SelectDataTable>
           </Grid>
         </Grid>
