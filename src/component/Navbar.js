@@ -1,19 +1,16 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 
-
-const Navbar = () =>{
-    return(
-        <div>
-            <Link to="/">Home</Link>|
-            {/* <Link to="/simpleline">Simple LineChart</Link>| */}
-            <Link to="/multiline">Multi LineChart</Link>|
-            {/* <Link to="/linecolor">Change line color</Link>| */}
-            <Link to="/simplescatter">Simple Scatter plot</Link>|
-            <Link to="/scatter">Scatter plot</Link>
-
-        </div>
-    )
-}
+const Navbar = () => {
+  return (
+    <div>
+      <Link to="/">Home</Link>|
+      {/* <Link to="/simpleline">Simple LineChart</Link>| */}
+      <Link to="/multiline">Multi LineChart</Link>|
+      {/* <Link to="/linecolor">Change line color</Link>| */}
+      <Link to="/scatter">Scatter plot</Link>|<Link to="/lasso">Lasso</Link>
+    </div>
+  );
+};
 export default Navbar;
 
 // const t = [

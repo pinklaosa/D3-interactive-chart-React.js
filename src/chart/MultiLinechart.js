@@ -6,7 +6,6 @@ const MultiLinechart = (props) => {
   const { data, height, width, margin, brushToolCheck, listDate, pullX1 } =
     props;
 
-    
   const renders = useRef(0);
 
   // console.log("Multiline Comp : " + brushToolCheck);
@@ -196,9 +195,9 @@ const MultiLinechart = (props) => {
     );
 
     const selectedLine = (listDate) => {
-      const checkStartDate = listDate.some(d => d.start === firstDate);
+      const checkStartDate = listDate.some((d) => d.start === firstDate);
       let sectionLine = listDate.length * 2 + 1;
-      
+
       if (sectionLine == 3) {
         const x0 = parseDate(listDate[0].start);
         const x1 = parseDate(listDate[0].end);
@@ -208,12 +207,57 @@ const MultiLinechart = (props) => {
         let i = 0;
         for (let index = 1; index <= sectionLine; index++) {
           let lastLoop = sectionLine - 2;
+          let j = 0;
           if (index % 2 == 0) {
-            console.log("sectionLine " + index + ": Hightlight");
+            // console.log("sectionLine " + index + ": Hightlight");
+            const x0 = parseDate(listDate[i].start);
+            const x1 = parseDate(listDate[i].end);
+            const lineHighlight = lines
+              .append("path")
+              .attr("fill", "none")
+              .attr("class", "line")
+              .attr("id", (d) => "line-highlight-" + d.col)
+              .attr("stroke-width", "3px")
+              .attr("stroke", (d) => color(d))
+              .attr("d", (data) =>
+                line(
+                  data.values.filter(
+                    (d) =>
+                      d.date.getTime() >= x0.getTime() &&
+                      d.date.getTime() <= x1.getTime()
+                  )
+                )
+              );
+            i++;
           } else if (index % 2 == 1) {
-            console.log("sectionLine " + index + ": Not ");
-          } else if (index == lastLoop) {
-            console.log("sectionLine " + index + ": Not ");
+            // console.log("sectionLine " + index + ": Not ");
+            const x0 = parseDate(listDate[j].start);
+            const x1 = parseDate(listDate[j].end);
+            if (index === 1) {
+              const lineNotHighlight = lines
+                .append("path")
+                .attr("fill", "none")
+                .attr("class", "line")
+                .attr("stroke", "rgba(0, 0, 0, 0.171)")
+                .attr("d", (data) =>
+                  line(
+                    data.values.filter((d) => d.date.getTime() <= x0.getTime())
+                  )
+                );
+            } else if (index === lastLoop) {
+              // // console.log("sectionLine " + index + ": Not ");
+              const lineNotHighlight2 = lines
+                .append("path")
+                .attr("fill", "none")
+                .attr("class", "line")
+                .attr("stroke", "rgba(0, 0, 0, 0.171)")
+                .attr("d", (data) =>
+                  line(
+                    data.values.filter((d) => d.date.getTime() >= x1.getTime())
+                  )
+                );
+            }
+            j++;
           }
         }
       }

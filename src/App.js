@@ -9,6 +9,7 @@ import ChangeLineColor from "./chart/ChangeLineColor";
 import Grid from "@material-ui/core/Grid";
 import ScatterPage from "./page/ScatterPage";
 import SimpleScatter from "./chart/SimpleScatter";
+import Lasso from "./component/Lasso";
 
 function App() {
   const [data, setData] = useState([]);
@@ -104,6 +105,9 @@ function App() {
               width={600}
               margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
             ></SimpleScatter>
+          </Route>
+          <Route path="/lasso">
+            <Lasso></Lasso>
           </Route>
         </Switch>
       </Router>
