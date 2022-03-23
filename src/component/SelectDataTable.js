@@ -3,7 +3,7 @@ import React, { useRef, memo, useState } from "react";
 import * as d3 from "d3";
 
 const SelectDataTable = (props) => {
-  const { rawdata, x0, x1, listDate } = props;
+  const { rawdata, x0, x1,listData } = props;
   const [rowsData, setRowsData] = useState([]);
   const renders = useRef(0);
   const parseDate = d3.timeParse("%Y-%m");
@@ -28,9 +28,8 @@ const SelectDataTable = (props) => {
   ];
 
   let rows = [];
-
-  if (listDate) {
-
+  if (listData.length > 0) {
+    console.log(listData);
   } else {
     const rawrows = rawdata.map((d, index) => {
       const dx0 = parseDate(x0);
