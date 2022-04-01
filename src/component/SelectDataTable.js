@@ -29,7 +29,7 @@ const SelectDataTable = (props) => {
 
   let rows = [];
   if (listData.length > 0) {
-    console.log(listData);
+    rows = listData;
   } else {
     const rawrows = rawdata.map((d, index) => {
       const dx0 = parseDate(x0);

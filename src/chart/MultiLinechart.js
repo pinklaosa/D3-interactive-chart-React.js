@@ -195,6 +195,7 @@ const MultiLinechart = (props) => {
     );
 
     const selectedLine = (listDate) => {
+      console.log(listDate);
       const checkStartDate = listDate.some((d) => d.start === firstDate);
       let sectionLine = listDate.length * 2 + 1;
 

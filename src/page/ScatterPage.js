@@ -13,6 +13,8 @@ import Paper from "@material-ui/core/Paper";
 import Divider from "@material-ui/core/Divider";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -52,10 +54,12 @@ const ScatterPage = (props) => {
   const [brushScatter, setBrushScatter] = useState(false);
   const [tools, setTools] = useState("brush");
   const [selectedData, setSelectedData] = useState([]);
-  const [formats, setFormats] = useState("add");
+  const [formats, setFormats] = useState("Von");
 
   const handleFormat = (event, newFormats) => {
-    setFormats(newFormats);
+    if(newFormats !== null){
+      setFormats(newFormats);
+    }
   };
 
   const handleTools = (event, newTools) => {
@@ -131,9 +135,6 @@ const ScatterPage = (props) => {
           <ToggleButton value="brush">
             <Crop54RoundedIcon />
           </ToggleButton>
-          <ToggleButton value="lessoBrush">
-            <GestureRoundedIcon />
-          </ToggleButton>
         </StyledToggleButtonGroup>
         <Divider flexItem orientation="vertical" className={classes.divider} />
         <StyledToggleButtonGroup
@@ -142,11 +143,11 @@ const ScatterPage = (props) => {
           exclusive
           onChange={handleFormat}
         >
-          <ToggleButton value="add">
-            <AddIcon />
+          <ToggleButton value="Von">
+            <VisibilityIcon />
           </ToggleButton>
-          <ToggleButton value="remove">
-            <RemoveIcon />
+          <ToggleButton value="Voff">
+            <VisibilityOffIcon />
           </ToggleButton>
         </StyledToggleButtonGroup>
         <Button
@@ -170,6 +171,7 @@ const ScatterPage = (props) => {
             x1={datex1}
             tools={tools}
             selectedData={selectedData}
+            formats={formats}
             pullXY={pullXY}
             brushTools={brushTools}
           ></Scatter>

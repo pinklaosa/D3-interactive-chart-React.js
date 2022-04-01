@@ -1,6 +1,5 @@
 import React, { useEffect, useState, memo, useRef, useMemo } from "react";
 import * as d3 from "d3";
-import {Helmet} from "react-helmet";
 // import { lasso } from "lasso";
 
 const Scatter = (props) => {
@@ -15,6 +14,7 @@ const Scatter = (props) => {
     brushTools,
     tools,
     selectedData,
+    formats,
   } = props;
   const parseDate = d3.timeParse("%Y-%m-%d %H:%M:%S+%H:%M");
   const [circlesHighlight, setCirclesHighlight] = useState([]);
@@ -24,10 +24,9 @@ const Scatter = (props) => {
 
   useEffect(() => {
     plotChart();
-  }, [data, x0, x1, tools, selectedData]);
+  }, [data, x0, x1, tools, selectedData, formats]);
 
   const plotChart = () => {
-    
     //  console.log("Date : " + x0 + " - " + x1);
     d3.select("#scatterplotSVG").remove();
     // console.log(selectedData);
@@ -84,43 +83,27 @@ const Scatter = (props) => {
         .attr("cx", (d) => x(d[columnsCsv[1]]))
         .attr("cy", (d) => y(d[columnsCsv[2]]))
         .attr("r", r)
-        // .attr("fill-opacity", opacity)
+        .attr("fill-opacity", opacity)
         .attr("fill", colorPoint);
     };
-
-    //plot circles
-    // if (x0 != "" && x1 != "") {
-    //   const rawrows = data.map((d) => {
-    //     const timestamp = parseDate(d[columnsCsv[0]]);
-    //     return {
-    //       ...d,
-    //       CheckTime:
-    //         x0 !== "" && x1 !== ""
-    //           ? timestamp.getTime() >= x0.getTime() &&
-    //             timestamp.getTime() <= x1.getTime()
-    //           : false,
-    //     };
-    //   });
-    //   const hightlightCircles = rawrows.filter((r) => r.CheckTime == true);
-    //   const noHightlightCircles = rawrows.filter((r) => r.CheckTime == false);
-    //   scatterPoint(hightlightCircles, 3, 0.7, color());
-    //   scatterPoint(noHightlightCircles, 1.5, 0.7, "rgba(0, 0, 0, 0.171)");
-    // } else if (x0 === "" || x1 === "") {
-    //   scatterPoint(data, 3, 0.7, color());
-    // }
 
     if (selectedData.length > 0) {
       const selectPoints = selectedData.map((element, index) => data[element]);
       const notSelectedPoints = data.filter(
         (element, index) => !selectedData.includes(index)
       );
-      // console.log(data);
-      // console.log(selectPoints);
-      // console.log(notSelectedPoints);
-      // console.log("------------------------------------------------");
-      d3.selectAll(".dataplot").remove();
-      scatterPoint(selectPoints, 3, 0.7, color());
-      scatterPoint(notSelectedPoints, 3, 0.5, "rgba(0, 0, 0, 0.171)");
+      scatterPoint(data, 3, 0.7, color());
+      svg
+        .selectAll(".dataplot")
+        .attr("fill", () => {
+          if (formats == "Von") {
+            return "rgba(0, 0, 0, 0.171)";
+          } else if (formats == "Voff") {
+            return "rgba(0, 0, 0, 0)";
+          }
+        })
+        .filter((element, index) => selectedData.includes(index))
+        .attr("fill", color());
     } else {
       scatterPoint(data, 3, 0.7, color());
     }
@@ -149,11 +132,11 @@ const Scatter = (props) => {
         .selectAll(".dataplot")
         .attr("fill", "rgba(0, 0, 0, 0.171)")
         .filter(
-          (d) =>
+          (d, index) =>
             x0 <= x(d[columnsCsv[1]]) &&
             x(d[columnsCsv[1]]) < x1 &&
             y0 <= y(d[columnsCsv[2]]) &&
-            y(d[columnsCsv[2]]) < y1
+            y(d[columnsCsv[2]]) < y1 
         )
         .attr("fill", color())
         .data();
