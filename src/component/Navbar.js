@@ -4,7 +4,7 @@ const Navbar = () => {
   return (
     <div>
       <Link to="/">Home</Link>|
-      {/* <Link to="/simpleline">Simple LineChart</Link>| */}
+      <Link to="/simpleline">Simple LineChart</Link>|
       <Link to="/multiline">Multi LineChart</Link>|
       {/* <Link to="/linecolor">Change line color</Link>| */}
       <Link to="/scatter">Scatter plot</Link>|<Link to="/lasso">Lasso</Link>
