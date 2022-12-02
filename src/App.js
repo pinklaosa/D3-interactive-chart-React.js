@@ -10,6 +10,8 @@ import Grid from "@material-ui/core/Grid";
 import ScatterPage from "./page/ScatterPage";
 import SimpleScatter from "./chart/SimpleScatter";
 import Lasso from "./component/Lasso";
+import Tur from "./component/Tur";
+import Test from "./component/Test";
 
 function App() {
   const [data, setData] = useState([]);
@@ -50,7 +52,7 @@ function App() {
       setRawdataS(d);
       const loaddata = d.map(({ TimeStamp, HEALTH }) => {
         return {
-          date: parseDate2(TimeStamp) ,
+          date: parseDate2(TimeStamp),
           health: +HEALTH,
         };
       });
@@ -107,7 +109,9 @@ function App() {
             ></SimpleScatter>
           </Route>
           <Route path="/lasso">
-            <Lasso></Lasso>
+            {/* <Lasso></Lasso> */}
+            <Tur />
+            <Test/>
           </Route>
         </Switch>
       </Router>
